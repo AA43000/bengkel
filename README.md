@@ -1,6 +1,6 @@
 # Bengkel Projek
 
-. Bengkel Projek adalah platform manajemen bengkel otomotif yang dirancang khusus untuk memudahkan pemilik bengkel dan mekanik dalam mengelola operasional sehari-hari. Dengan fitur-fitur canggih seperti pelacakan pekerjaan, manajemen inventaris, dan integrasi dengan sistem pelanggan, Bengkel Projek memberikan solusi terbaik untuk meningkatkan efisiensi dan produktivitas dalam layanan perawatan kendaraan.
+Bengkel Projek adalah platform manajemen bengkel otomotif yang dirancang khusus untuk memudahkan pemilik bengkel dan mekanik dalam mengelola operasional sehari-hari. Dengan fitur-fitur canggih seperti pelacakan pekerjaan, manajemen inventaris, dan integrasi dengan sistem pelanggan, Bengkel Projek memberikan solusi terbaik untuk meningkatkan efisiensi dan produktivitas dalam layanan perawatan kendaraan.
 
 ## Instalasi
 
@@ -20,6 +20,20 @@ DB_PORT=3306
 DB_DATABASE=bengkel  
 DB_USERNAME=user_database  
 DB_PASSWORD=kata_sandi_database  
+
+## Progres Proyek
+
+- [x] Master Produk
+- [x] Master Supplier
+- [x] Master Pelanggan
+- [x] Master Sales
+- [x] Master User
+- [x] Master Mekanik
+- [x] Master Kendaraan
+- [ ] Transaksi Pembelian
+- [ ] Transaksi Penjalan
+- [ ] Penjualan, Pemasangan, Service
+- [ ] Daftar Item Keluar
 
 ## Kontak
 
