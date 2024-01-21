@@ -12,7 +12,7 @@
           integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
           crossorigin="anonymous"/>
 
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
 
 </head>
 <body class="hold-transition login-page">
@@ -75,12 +75,12 @@
                 </div>
             </form>
 
-            <p class="mb-1">
+            <!-- <p class="mb-1">
                 <a href="{{ route('password.request') }}">I forgot my password</a>
             </p>
             <p class="mb-0">
                 <a href="{{ route('register') }}" class="text-center">Register a new membership</a>
-            </p>
+            </p> -->
         </div>
         <!-- /.login-card-body -->
     </div>
@@ -88,7 +88,7 @@
 </div>
 <!-- /.login-box -->
 
-<script src="{{ mix('js/app.js') }}"></script>
+<script src="{{ asset('/js/app.js') }}"></script>
 
 </body>
 </html>

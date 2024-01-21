@@ -58,3 +58,32 @@
         </li>
     </ul>
 </li>
+<li class="nav-item">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-shopping-cart"></i>
+        <p>
+            Transksi
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview" style="display: none;">
+        <li class="nav-item">
+            <a href="{{ route('tpembelian.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Transaksi Pembelian</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('tpenjualan.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Transaksi Penjualan</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('item_keluar.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Daftar Item Keluar</p>
+            </a>
+        </li>
+    </ul>
+</li>

@@ -55,4 +55,37 @@ Route::get('/produk/{id}/edit', [\App\Http\Controllers\ProdukController::class, 
 Route::put('/produk/{id}', [\App\Http\Controllers\ProdukController::class, 'update'])->name('produk.update');
 Route::get('/produk/{id}', [\App\Http\Controllers\ProdukController::class, 'destroy'])->name('produk.destroy');
 
+Route::resource('/tpembelian', \App\Http\Controllers\TpembelianController::class);
+Route::get('/tpembelian/{id}/edit', [\App\Http\Controllers\TpembelianController::class, 'edit'])->name('tpembelian.edit');
+Route::put('/tpembelian/{id}', [\App\Http\Controllers\TpembelianController::class, 'update'])->name('tpembelian.update');
+Route::get('/tpembelian/{id}', [\App\Http\Controllers\TpembelianController::class, 'destroy'])->name('tpembelian.destroy');
+Route::post('/tpembelian/post_detail', [\App\Http\Controllers\TpembelianController::class, 'post_detail'])->name('tpembelian.post_detail');
+Route::get('/tpembelian/load_produk/{id_produk}', [\App\Http\Controllers\TpembelianController::class, 'load_produk'])->name('tpembelian.load_produk');
+Route::get('/tpembelian/load_detail/{idthpembelian}', [\App\Http\Controllers\TpembelianController::class, 'load_detail'])->name('tpembelian.load_detail');
+Route::get('/tpembelian/edit_detail/{idtdpembelian}', [\App\Http\Controllers\TpembelianController::class, 'edit_detail'])->name('tpembelian.edit_detail');
+Route::get('/tpembelian/delete_detail/{idtdpembelian}', [\App\Http\Controllers\TpembelianController::class, 'delete_detail'])->name('tpembelian.delete_detail');
+Route::get('/tpembelian/get_detail/{idthpembelian}', [\App\Http\Controllers\TpembelianController::class, 'get_detail'])->name('tpembelian.get_detail');
+
+Route::resource('/tpenjualan', \App\Http\Controllers\TpenjualanController::class);
+Route::get('/tpenjualan/{id}/edit', [\App\Http\Controllers\TpenjualanController::class, 'edit'])->name('tpenjualan.edit');
+Route::put('/tpenjualan/{id}', [\App\Http\Controllers\TpenjualanController::class, 'update'])->name('tpenjualan.update');
+Route::get('/tpenjualan/{id}', [\App\Http\Controllers\TpenjualanController::class, 'destroy'])->name('tpenjualan.destroy');
+Route::post('/tpenjualan/post_detail', [\App\Http\Controllers\TpenjualanController::class, 'post_detail'])->name('tpenjualan.post_detail');
+Route::get('/tpenjualan/load_produk/{id_produk}', [\App\Http\Controllers\TpenjualanController::class, 'load_produk'])->name('tpenjualan.load_produk');
+Route::get('/tpenjualan/load_detail/{idthpembelian}', [\App\Http\Controllers\TpenjualanController::class, 'load_detail'])->name('tpenjualan.load_detail');
+Route::get('/tpenjualan/edit_detail/{idtdpembelian}', [\App\Http\Controllers\TpenjualanController::class, 'edit_detail'])->name('tpenjualan.edit_detail');
+Route::get('/tpenjualan/delete_detail/{idtdpembelian}', [\App\Http\Controllers\TpenjualanController::class, 'delete_detail'])->name('tpenjualan.delete_detail');
+Route::get('/tpenjualan/get_detail/{idthpembelian}', [\App\Http\Controllers\TpenjualanController::class, 'get_detail'])->name('tpenjualan.get_detail');
+
+Route::resource('/item_keluar', \App\Http\Controllers\ItemkeluarController::class);
+Route::get('/item_keluar/{id}/edit', [\App\Http\Controllers\ItemkeluarController::class, 'edit'])->name('item_keluar.edit');
+Route::put('/item_keluar/{id}', [\App\Http\Controllers\ItemkeluarController::class, 'update'])->name('item_keluar.update');
+Route::get('/item_keluar/{id}', [\App\Http\Controllers\ItemkeluarController::class, 'destroy'])->name('item_keluar.destroy');
+Route::post('/item_keluar/post_detail', [\App\Http\Controllers\ItemkeluarController::class, 'post_detail'])->name('item_keluar.post_detail');
+Route::get('/item_keluar/load_produk/{id_produk}', [\App\Http\Controllers\ItemkeluarController::class, 'load_produk'])->name('item_keluar.load_produk');
+Route::get('/item_keluar/load_detail/{idthpembelian}', [\App\Http\Controllers\ItemkeluarController::class, 'load_detail'])->name('item_keluar.load_detail');
+Route::get('/item_keluar/edit_detail/{idtdpembelian}', [\App\Http\Controllers\ItemkeluarController::class, 'edit_detail'])->name('item_keluar.edit_detail');
+Route::get('/item_keluar/delete_detail/{idtdpembelian}', [\App\Http\Controllers\ItemkeluarController::class, 'delete_detail'])->name('item_keluar.delete_detail');
+Route::get('/item_keluar/get_detail/{idthpembelian}', [\App\Http\Controllers\ItemkeluarController::class, 'get_detail'])->name('item_keluar.get_detail');
+
 Auth::routes();
