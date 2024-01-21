@@ -30,10 +30,10 @@ DB_PASSWORD=kata_sandi_database
 - [x] Master User
 - [x] Master Mekanik
 - [x] Master Kendaraan
-- [ ] Transaksi Pembelian
-- [ ] Transaksi Penjalan
+- [x] Transaksi Pembelian
+- [x] Transaksi Penjalan
+- [x] Daftar Item Keluar
 - [ ] Penjualan, Pemasangan, Service
-- [ ] Daftar Item Keluar
 
 ## Kontak
 
