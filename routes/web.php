@@ -88,4 +88,16 @@ Route::get('/item_keluar/edit_detail/{idtdpembelian}', [\App\Http\Controllers\It
 Route::get('/item_keluar/delete_detail/{idtdpembelian}', [\App\Http\Controllers\ItemkeluarController::class, 'delete_detail'])->name('item_keluar.delete_detail');
 Route::get('/item_keluar/get_detail/{idthpembelian}', [\App\Http\Controllers\ItemkeluarController::class, 'get_detail'])->name('item_keluar.get_detail');
 
+Route::resource('/service', \App\Http\Controllers\ServiceController::class);
+Route::get('/service/{id}/edit', [\App\Http\Controllers\ServiceController::class, 'edit'])->name('service.edit');
+Route::put('/service/{id}', [\App\Http\Controllers\ServiceController::class, 'update'])->name('service.update');
+Route::get('/service/{id}', [\App\Http\Controllers\ServiceController::class, 'destroy'])->name('service.destroy');
+Route::post('/service/post_detail', [\App\Http\Controllers\ServiceController::class, 'post_detail'])->name('service.post_detail');
+Route::post('/service/store', [\App\Http\Controllers\ServiceController::class, 'store'])->name('service.store');
+Route::get('/service/load_produk/{id_produk}', [\App\Http\Controllers\ServiceController::class, 'load_produk'])->name('service.load_produk');
+Route::get('/service/load_detail/{idthpembelian}', [\App\Http\Controllers\ServiceController::class, 'load_detail'])->name('service.load_detail');
+Route::get('/service/edit_detail/{idtdpembelian}', [\App\Http\Controllers\ServiceController::class, 'edit_detail'])->name('service.edit_detail');
+Route::get('/service/delete_detail/{idtdpembelian}', [\App\Http\Controllers\ServiceController::class, 'delete_detail'])->name('service.delete_detail');
+Route::get('/service/get_detail/{idthpembelian}', [\App\Http\Controllers\ServiceController::class, 'get_detail'])->name('service.get_detail');
+
 Auth::routes();

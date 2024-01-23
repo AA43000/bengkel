@@ -85,5 +85,11 @@
                 <p>Daftar Item Keluar</p>
             </a>
         </li>
+        <li class="nav-item">
+            <a href="{{ route('service.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Service</p>
+            </a>
+        </li>
     </ul>
 </li>
