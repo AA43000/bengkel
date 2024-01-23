@@ -33,7 +33,7 @@ DB_PASSWORD=kata_sandi_database
 - [x] Transaksi Pembelian
 - [x] Transaksi Penjalan
 - [x] Daftar Item Keluar
-- [ ] Penjualan, Pemasangan, Service
+- [x] Penjualan, Pemasangan, Service
 
 ## Kontak
 
