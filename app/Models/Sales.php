@@ -17,6 +17,7 @@ class Sales extends Model
         'alamat',
         'kota',
         'telephone',
+        'id_cabang',
         'is_delete',
     ];
 }

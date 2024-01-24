@@ -13,7 +13,10 @@ class PelangganController extends Controller
     }
     public function index()
     {
-        $pelanggans = Pelanggan::latest()->where('is_delete', 0)->paginate(5);
+        $pelanggans = Pelanggan::latest()
+        ->where('is_delete', 0)
+        ->where('id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('pelanggan/index', compact('pelanggans'));
     }
     public function create()
@@ -49,7 +52,8 @@ class PelangganController extends Controller
             'telephone'   => $request->telephone,
             'fax'   => $request->fax,
             'kontak_person'   => $request->kontak_person,
-            'note'   => $request->note
+            'note'   => $request->note,
+            'id_cabang' => auth()->user()->id_cabang
         ]);
 
         //redirect to index

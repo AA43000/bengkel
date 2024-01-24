@@ -18,6 +18,7 @@ class Mekanik extends Model
         'provinsi',
         'telephone',
         'note',
+        'id_cabang',
         'is_delete'
     ];
 }

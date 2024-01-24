@@ -21,6 +21,7 @@ class Pelanggan extends Model
         'fax',
         'kontak_person',
         'note',
+        'id_cabang',
         'is_delete'
     ];
 }

@@ -20,7 +20,10 @@ class TpembelianController extends Controller
         // query header pembelian
         $thpembelians = Thpembelian::leftJoin('suppliers', 'suppliers.id', '=', 'thpembelians.id_supplier')
         ->select('thpembelians.*', 'suppliers.kode as kode_supplier', 'suppliers.nama as nama_supplier')
-        ->latest()->where('thpembelians.is_delete', 0)->paginate(5);
+        ->latest()
+        ->where('thpembelians.is_delete', 0)
+        ->where('thpembelians.id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('tpembelian/index', compact('thpembelians'));
     }
     public function create()
@@ -29,18 +32,20 @@ class TpembelianController extends Controller
         $suppliers = DB::table('suppliers')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         // query produk
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         return view('tpembelian.create', compact('suppliers', 'produks'));
     }
     function generatePurchaseCode() {
         // mengambil data kode terakhir yang ada
-        $lastPurchase = DB::table('thpembelians')->latest()->first();
+        $lastPurchase = DB::table('thpembelians')->latest()->where('id_cabang', auth()->user()->id_cabang)->first();
 
         if (!$lastPurchase) {
             // jika belum ada kode yang dibuat
@@ -61,6 +66,7 @@ class TpembelianController extends Controller
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
             ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
             ->where('a.is_delete', 0)
+            ->where('a.id_cabang', auth()->user()->id_cabang)
             ->where('a.idthpembelian', $idthpembelian)
             ->get();
 
@@ -160,7 +166,8 @@ class TpembelianController extends Controller
                     'pesan'     => $request->pesan,
                     'qty'     => $request->qty,
                     'harga'     => $request->harga,
-                    'subtotal'     => $request->subtotal,
+                    'subtotal' => $request->subtotal,
+                    'id_cabang' => auth()->user()->id_cabang
                 ]);
                     
                 if($request->idthpembelian != 0) {
@@ -227,12 +234,14 @@ class TpembelianController extends Controller
             'total'     => $request->total,
             'potongan'     => $request->potongan,
             'total_akhir'     => $request->total_akhir,
-            'tanggal'     => $request->tanggal
+            'tanggal'     => $request->tanggal,
+            'id_cabang' => auth()->user()->id_cabang
         ]);
 
         // update id header di detail pembelian
         Tdpembelian::where('idthpembelian', 0)
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->update(['idthpembelian' => $thpembelian->id]);
 
         // mengarah ke fungsi update stok produk
@@ -263,12 +272,14 @@ class TpembelianController extends Controller
         $suppliers = DB::table('suppliers')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         //query produk
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         // query header pembelian

@@ -21,7 +21,10 @@ class ItemkeluarController extends Controller
     public function index()
     {
         // query header itemkeluar
-        $thitemkeluars = Thitemkeluar::latest()->where('is_delete', 0)->paginate(5);
+        $thitemkeluars = Thitemkeluar::latest()
+        ->where('is_delete', 0)
+        ->where('id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('item_keluar/index', compact('thitemkeluars'));
     }
     public function create()
@@ -30,12 +33,13 @@ class ItemkeluarController extends Controller
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         return view('item_keluar.create', compact('produks'));
     }
     function generatePurchaseCode() {
         // mengambil data kode terakhir yang ada
-        $lastPurchase = DB::table('thitemkeluars')->latest()->first();
+        $lastPurchase = DB::table('thitemkeluars')->where('id_cabang', auth()->user()->id_cabang)->latest()->first();
 
         if (!$lastPurchase) {
             // jika belum ada kode yang dibuat
@@ -56,6 +60,7 @@ class ItemkeluarController extends Controller
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
             ->select('b.nama_item', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
             ->where('a.is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->where('a.idthitemkeluar', $idthitemkeluar)
             ->get();
 
@@ -153,6 +158,7 @@ class ItemkeluarController extends Controller
                     'qty'     => $request->qty,
                     'harga'     => $request->harga,
                     'subtotal'     => $request->subtotal,
+                    'id_cabang' => auth()->user()->id_cabang
                 ]);
                     
                 // if($request->idthitemkeluar != 0) {
@@ -216,6 +222,7 @@ class ItemkeluarController extends Controller
             'keterangan'     => $request->keterangan,
             'total'     => $request->total,
             'tanggal'     => $request->tanggal,
+            'id_cabang' => auth()->user()->id_cabang,
             'created_by'     => $this->userId
         ]);
 
@@ -252,6 +259,7 @@ class ItemkeluarController extends Controller
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         // query header itemkeluar

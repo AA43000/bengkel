@@ -13,7 +13,10 @@ class SalesController extends Controller
     }
     public function index()
     {
-        $sales = Sales::latest()->where('is_delete', 0)->paginate(5);
+        $sales = Sales::latest()
+        ->where('is_delete', 0)
+        ->where('id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('sales/index', compact('sales'));
     }
     public function create()
@@ -42,6 +45,7 @@ class SalesController extends Controller
             'alamat'   => $request->alamat,
             'kota'   => $request->kota,
             'telephone'   => $request->telephone,
+            'id_cabang' => auth()->user()->id_cabang
         ]);
 
         //redirect to index

@@ -13,7 +13,10 @@ class KendaraanController extends Controller
     }
     public function index()
     {
-        $kendaraans = Kendaraan::latest()->where('is_delete', 0)->paginate(5);
+        $kendaraans = Kendaraan::latest()
+        ->where('is_delete', 0)
+        ->where('id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('kendaraan/index', compact('kendaraans'));
     }
     public function create()
@@ -51,7 +54,8 @@ class KendaraanController extends Controller
             'silinder'     => $request->silinder,
             'warna'     => $request->warna,
             'no_rangka'     => $request->no_rangka,
-            'no_mesin'     => $request->no_mesin
+            'no_mesin'     => $request->no_mesin,
+            'id_cabang' => auth()->user()->id_cabang
         ]);
 
         //redirect to index

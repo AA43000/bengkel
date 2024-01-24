@@ -14,7 +14,10 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::latest()->where('is_delete', 0)->paginate(5);
+        $users = User::latest()
+            ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
+            ->paginate(5);
         return view('user/index', compact('users'));
     }
     public function create()
@@ -34,6 +37,7 @@ class UserController extends Controller
         User::create([
             'name'     => $request->name,
             'email'   => $request->email,
+            'id_cabang' => auth()->user()->id_cabang,
             'password'   => Hash::make($request->password)
         ]);
 

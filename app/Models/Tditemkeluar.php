@@ -15,6 +15,7 @@ class Tditemkeluar extends Model
         'qty',
         'harga',
         'subtotal',
+        'id_cabang',
         'is_delete'
     ];
 }

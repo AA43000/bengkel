@@ -20,7 +20,10 @@ class TpenjualanController extends Controller
         // query header penjualan
         $thpenjualans = Thpenjualan::leftJoin('pelanggans', 'pelanggans.id', '=', 'thpenjualans.id_pelanggan')
         ->select('thpenjualans.*', 'pelanggans.kode as kode_pelanggan', 'pelanggans.nama as nama_pelanggan')
-        ->latest()->where('thpenjualans.is_delete', 0)->paginate(5);
+        ->latest()
+        ->where('thpenjualans.is_delete', 0)
+        ->where('thpenjualans.id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('tpenjualan/index', compact('thpenjualans'));
     }
     public function create()
@@ -29,18 +32,20 @@ class TpenjualanController extends Controller
         $pelanggans = DB::table('pelanggans')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         // query produk
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         return view('tpenjualan.create', compact('pelanggans', 'produks'));
     }
     function generatePurchaseCode() {
         // mengambil data kode terakhir yang ada
-        $lastPurchase = DB::table('thpenjualans')->latest()->first();
+        $lastPurchase = DB::table('thpenjualans')->where('id_cabang', auth()->user()->id_cabang)->latest()->first();
 
         if (!$lastPurchase) {
             // jika belum ada kode yang dibuat
@@ -61,6 +66,7 @@ class TpenjualanController extends Controller
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
             ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
             ->where('a.is_delete', 0)
+            ->where('a.id_cabang', auth()->user()->id_cabang)
             ->where('a.idthpenjualan', $idthpenjualan)
             ->get();
 
@@ -166,6 +172,7 @@ class TpenjualanController extends Controller
                         'qty'     => $request->qty,
                         'harga'     => $request->harga,
                         'subtotal'     => $request->subtotal,
+                        'id_cabang' => auth()->user()->id_cabang
                     ]);
                     
                     if($request->idthpenjualan != 0) {
@@ -249,12 +256,14 @@ class TpenjualanController extends Controller
             'total'     => $request->total,
             'potongan'     => $request->potongan,
             'total_akhir'     => $request->total_akhir,
-            'tanggal'     => $request->tanggal
+            'tanggal'     => $request->tanggal,
+            'id_cabang' => auth()->user()->id_cabang
         ]);
 
         // update id header di detail penjualan
         Tdpenjualan::where('idthpenjualan', 0)
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->update(['idthpenjualan' => $thpenjualan->id]);
 
         // mengarah ke fungsi update stok produk
@@ -285,12 +294,14 @@ class TpenjualanController extends Controller
         $pelanggans = DB::table('pelanggans')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         //query produk
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         // query header penjualan

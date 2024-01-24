@@ -24,6 +24,7 @@ class Supplier extends Model
         'atas_nama',
         'kontak_person',
         'email',
+        'id_cabang',
         'is_delete'
     ];
 }

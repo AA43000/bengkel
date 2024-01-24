@@ -15,6 +15,7 @@ class Thitemkeluar extends Model
         'keterangan',
         'tanggal',
         'created_by',
+        'id_cabang',
         'is_delete'
     ];
 }

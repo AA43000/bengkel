@@ -13,7 +13,10 @@ class SupplierController extends Controller
     }
     public function index()
     {
-        $suppliers = Supplier::latest()->where('is_delete', 0)->paginate(5);
+        $suppliers = Supplier::latest()
+        ->where('is_delete', 0)
+        ->where('id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('supplier/index', compact('suppliers'));
     }
     public function create()
@@ -55,7 +58,8 @@ class SupplierController extends Controller
             'no_account'     => $request->no_account,
             'atas_nama'     => $request->atas_nama,
             'kontak_person'     => $request->kontak_person,
-            'email'     => $request->email
+            'email'     => $request->email,
+            'id_cabang' => auth()->user()->id_cabang
         ]);
 
         //redirect to index

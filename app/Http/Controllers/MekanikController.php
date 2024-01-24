@@ -13,7 +13,10 @@ class MekanikController extends Controller
     }
     public function index()
     {
-        $mekaniks = Mekanik::latest()->where('is_delete', 0)->paginate(5);
+        $mekaniks = Mekanik::latest()
+        ->where('is_delete', 0)
+        ->where('id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('mekanik/index', compact('mekaniks'));
     }
     public function create()
@@ -43,7 +46,8 @@ class MekanikController extends Controller
             'kota'   => $request->kota,
             'provinsi'   => $request->provinsi,
             'telephone'   => $request->telephone,
-            'note'   => $request->note
+            'note'   => $request->note,
+            'id_cabang' => auth()->user()->id_cabang
         ]);
 
         //redirect to index

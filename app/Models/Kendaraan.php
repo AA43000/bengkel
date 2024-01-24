@@ -22,6 +22,7 @@ class Kendaraan extends Model
         'warna',
         'no_rangka',
         'no_mesin',
+        'id_cabang',
         'is_delete'
     ];
 }

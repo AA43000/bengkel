@@ -21,7 +21,10 @@ class ServiceController extends Controller
         $thservices = Thservice::leftJoin('mekaniks', 'mekaniks.id', '=', 'thservices.id_mekanik')
         ->select('thservices.*', 'mekaniks.nama as nama_mekanik')
         ->orderByRaw('mekaniks.id = 0 ASC')
-        ->latest()->where('thservices.is_delete', 0)->paginate(5);
+        ->latest()
+        ->where('thservices.is_delete', 0)
+        ->where('id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('service/index', compact('thservices'));
     }
     public function create()
@@ -30,18 +33,20 @@ class ServiceController extends Controller
         $pelanggans = DB::table('pelanggans')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         // query produk
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         return view('service.create', compact('pelanggans', 'produks'));
     }
     function generatePurchaseCode() {
         // mengambil data kode terakhir yang ada
-        $lastPurchase = DB::table('thservices')->latest()->first();
+        $lastPurchase = DB::table('thservices')->where('id_cabang', auth()->user()->id_cabang)->latest()->first();
 
         if (!$lastPurchase) {
             // jika belum ada kode yang dibuat
@@ -62,6 +67,7 @@ class ServiceController extends Controller
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
             ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
             ->where('a.is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->where('a.idthservice', $idthservice)
             ->get();
 
@@ -167,6 +173,7 @@ class ServiceController extends Controller
                         'qty'     => $request->qty,
                         'harga'     => $request->harga,
                         'subtotal'     => $request->subtotal,
+                        'id_cabang' => auth()->user()->id_cabang
                     ]);
                     
                     if($request->idthservice != 0) {
@@ -252,7 +259,8 @@ class ServiceController extends Controller
                 'total'     => 0,
                 'potongan'     => 0,
                 'total_akhir'     => 0,
-                'tanggal'     => date('Y-m-d')
+                'tanggal'     => date('Y-m-d'),
+                'id_cabang' => auth()->user()->id_cabang
             ]);
             
             $response["status"] = 200;
@@ -286,12 +294,14 @@ class ServiceController extends Controller
         $mekaniks = DB::table('mekaniks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         //query produk
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
+            ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
         
         // query header service

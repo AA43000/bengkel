@@ -16,6 +16,7 @@ class Thpembelian extends Model
         'potongan',
         'total_akhir',
         'tanggal',
+        'id_cabang',
         'is_delete'
     ];
 }

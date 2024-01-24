@@ -13,7 +13,10 @@ class ProdukController extends Controller
     }
     public function index()
     {
-        $produks = Produk::latest()->where('is_delete', 0)->paginate(5);
+        $produks = Produk::latest()
+        ->where('is_delete', 0)
+        ->where('id_cabang', auth()->user()->id_cabang)
+        ->paginate(5);
         return view('produk/index', compact('produks'));
     }
     public function create()
@@ -47,7 +50,8 @@ class ProdukController extends Controller
             'satuan'     => $request->satuan,
             'rak'     => $request->rak,
             'harga_pokok'     => $request->harga_pokok,
-            'harga_jual'     => $request->harga_jual
+            'harga_jual'     => $request->harga_jual,
+            'id_cabang' => auth()->user()->id_cabang
         ]);
 
         //redirect to index

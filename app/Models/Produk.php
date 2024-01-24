@@ -20,6 +20,7 @@ class Produk extends Model
         'rak',
         'harga_pokok',
         'harga_jual',
+        'id_cabang',
         'is_delete'
     ];
 }
