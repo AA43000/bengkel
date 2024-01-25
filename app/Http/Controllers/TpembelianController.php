@@ -17,6 +17,7 @@ class TpembelianController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query header pembelian
         $thpembelians = Thpembelian::leftJoin('suppliers', 'suppliers.id', '=', 'thpembelians.id_supplier')
         ->select('thpembelians.*', 'suppliers.kode as kode_supplier', 'suppliers.nama as nama_supplier')
@@ -24,10 +25,11 @@ class TpembelianController extends Controller
         ->where('thpembelians.is_delete', 0)
         ->where('thpembelians.id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('tpembelian/index', compact('thpembelians'));
+        return view('tpembelian/index', compact('thpembelians', 'app'));
     }
     public function create()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query supplier
         $suppliers = DB::table('suppliers')
             ->select('*')
@@ -41,7 +43,7 @@ class TpembelianController extends Controller
             ->where('is_delete', 0)
             ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
-        return view('tpembelian.create', compact('suppliers', 'produks'));
+        return view('tpembelian.create', compact('suppliers', 'produks', 'app'));
     }
     function generatePurchaseCode() {
         // mengambil data kode terakhir yang ada
@@ -268,6 +270,7 @@ class TpembelianController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query supplier
         $suppliers = DB::table('suppliers')
             ->select('*')
@@ -284,7 +287,7 @@ class TpembelianController extends Controller
         
         // query header pembelian
         $thpembelian = Thpembelian::find($id);
-        return view('tpembelian.edit', compact('thpembelian', 'suppliers', 'produks'));
+        return view('tpembelian.edit', compact('thpembelian', 'suppliers', 'produks', 'app'));
     }
     public function update(Request $request, $id)
     {

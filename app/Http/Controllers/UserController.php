@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
     public function __construct()
@@ -14,15 +15,17 @@ class UserController extends Controller
 
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $users = User::latest()
             ->where('is_delete', 0)
             ->where('id_cabang', auth()->user()->id_cabang)
             ->paginate(5);
-        return view('user/index', compact('users'));
+        return view('user/index', compact('users', 'app'));
     }
     public function create()
     {
-        return view('user.create');
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        return view('user.create', compact('app'));
     }
     public function store(Request $request)
     {
@@ -47,8 +50,9 @@ class UserController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $user = User::find($id);
-        return view('user.edit', compact('user'));
+        return view('user.edit', compact('user', 'app'));
     }
     public function update(Request $request, $id)
     {

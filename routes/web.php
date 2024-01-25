@@ -100,4 +100,7 @@ Route::get('/service/edit_detail/{idtdpembelian}', [\App\Http\Controllers\Servic
 Route::get('/service/delete_detail/{idtdpembelian}', [\App\Http\Controllers\ServiceController::class, 'delete_detail'])->name('service.delete_detail');
 Route::get('/service/get_detail/{idthpembelian}', [\App\Http\Controllers\ServiceController::class, 'get_detail'])->name('service.get_detail');
 
+Route::resource('/setting', \App\Http\Controllers\SettingController::class);
+Route::put('/setting/{id}', [\App\Http\Controllers\SettingController::class, 'update'])->name('setting.update');
+
 Auth::routes();

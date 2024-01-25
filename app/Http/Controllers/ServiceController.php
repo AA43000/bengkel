@@ -17,18 +17,20 @@ class ServiceController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query header service
         $thservices = Thservice::leftJoin('mekaniks', 'mekaniks.id', '=', 'thservices.id_mekanik')
         ->select('thservices.*', 'mekaniks.nama as nama_mekanik')
         ->orderByRaw('mekaniks.id = 0 ASC')
         ->latest()
         ->where('thservices.is_delete', 0)
-        ->where('id_cabang', auth()->user()->id_cabang)
+        ->where('thservices.id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('service/index', compact('thservices'));
+        return view('service/index', compact('thservices', 'app'));
     }
     public function create()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query pelanggan
         $pelanggans = DB::table('pelanggans')
             ->select('*')
@@ -42,7 +44,7 @@ class ServiceController extends Controller
             ->where('is_delete', 0)
             ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
-        return view('service.create', compact('pelanggans', 'produks'));
+        return view('service.create', compact('pelanggans', 'produks', 'app'));
     }
     function generatePurchaseCode() {
         // mengambil data kode terakhir yang ada
@@ -290,6 +292,7 @@ class ServiceController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query mekanik
         $mekaniks = DB::table('mekaniks')
             ->select('*')
@@ -306,7 +309,7 @@ class ServiceController extends Controller
         
         // query header service
         $thservice = Thservice::find($id);
-        return view('service.edit', compact('thservice', 'mekaniks', 'produks'));
+        return view('service.edit', compact('thservice', 'mekaniks', 'produks', 'app'));
     }
     public function update(Request $request, $id)
     {

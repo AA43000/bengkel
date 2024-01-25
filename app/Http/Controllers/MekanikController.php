@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mekanik;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MekanikController extends Controller
 {
@@ -13,15 +14,17 @@ class MekanikController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $mekaniks = Mekanik::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('mekanik/index', compact('mekaniks'));
+        return view('mekanik/index', compact('mekaniks', 'app'));
     }
     public function create()
     {
-        return view('mekanik.create');
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        return view('mekanik.create', compact('app'));
     }
     public function store(Request $request)
     {
@@ -56,8 +59,9 @@ class MekanikController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $mekanik = Mekanik::find($id);
-        return view('mekanik.edit', compact('mekanik'));
+        return view('mekanik.edit', compact('mekanik', 'app'));
     }
     public function update(Request $request, $id)
     {

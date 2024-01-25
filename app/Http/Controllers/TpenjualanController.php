@@ -17,6 +17,7 @@ class TpenjualanController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query header penjualan
         $thpenjualans = Thpenjualan::leftJoin('pelanggans', 'pelanggans.id', '=', 'thpenjualans.id_pelanggan')
         ->select('thpenjualans.*', 'pelanggans.kode as kode_pelanggan', 'pelanggans.nama as nama_pelanggan')
@@ -24,10 +25,11 @@ class TpenjualanController extends Controller
         ->where('thpenjualans.is_delete', 0)
         ->where('thpenjualans.id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('tpenjualan/index', compact('thpenjualans'));
+        return view('tpenjualan/index', compact('thpenjualans', 'app'));
     }
     public function create()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query pelanggan
         $pelanggans = DB::table('pelanggans')
             ->select('*')
@@ -41,7 +43,7 @@ class TpenjualanController extends Controller
             ->where('is_delete', 0)
             ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
-        return view('tpenjualan.create', compact('pelanggans', 'produks'));
+        return view('tpenjualan.create', compact('pelanggans', 'produks', 'app'));
     }
     function generatePurchaseCode() {
         // mengambil data kode terakhir yang ada
@@ -290,6 +292,7 @@ class TpenjualanController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query pelanggan
         $pelanggans = DB::table('pelanggans')
             ->select('*')
@@ -306,7 +309,7 @@ class TpenjualanController extends Controller
         
         // query header penjualan
         $thpenjualan = Thpenjualan::find($id);
-        return view('tpenjualan.edit', compact('thpenjualan', 'pelanggans', 'produks'));
+        return view('tpenjualan.edit', compact('thpenjualan', 'pelanggans', 'produks', 'app'));
     }
     public function update(Request $request, $id)
     {

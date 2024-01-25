@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PelangganController extends Controller
 {
@@ -13,15 +14,17 @@ class PelangganController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $pelanggans = Pelanggan::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('pelanggan/index', compact('pelanggans'));
+        return view('pelanggan/index', compact('pelanggans', 'app'));
     }
     public function create()
     {
-        return view('pelanggan.create');
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        return view('pelanggan.create', compact('app'));
     }
     public function store(Request $request)
     {
@@ -62,8 +65,9 @@ class PelangganController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $pelanggan = Pelanggan::find($id);
-        return view('pelanggan.edit', compact('pelanggan'));
+        return view('pelanggan.edit', compact('pelanggan', 'app'));
     }
     public function update(Request $request, $id)
     {

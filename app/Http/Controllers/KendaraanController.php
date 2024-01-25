@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class KendaraanController extends Controller
 {
@@ -13,15 +14,17 @@ class KendaraanController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $kendaraans = Kendaraan::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('kendaraan/index', compact('kendaraans'));
+        return view('kendaraan/index', compact('kendaraans', 'app'));
     }
     public function create()
     {
-        return view('kendaraan.create');
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        return view('kendaraan.create', compact('app'));
     }
     public function store(Request $request)
     {
@@ -64,8 +67,9 @@ class KendaraanController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $kendaraan = Kendaraan::find($id);
-        return view('kendaraan.edit', compact('kendaraan'));
+        return view('kendaraan.edit', compact('kendaraan', 'app'));
     }
     public function update(Request $request, $id)
     {

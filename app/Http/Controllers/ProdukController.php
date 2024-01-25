@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProdukController extends Controller
 {
@@ -13,15 +14,17 @@ class ProdukController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $produks = Produk::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('produk/index', compact('produks'));
+        return view('produk/index', compact('produks', 'app'));
     }
     public function create()
     {
-        return view('produk.create');
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        return view('produk.create', compact('app'));
     }
     public function store(Request $request)
     {
@@ -60,8 +63,9 @@ class ProdukController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $produk = Produk::find($id);
-        return view('produk.edit', compact('produk'));
+        return view('produk.edit', compact('produk', 'app'));
     }
     public function update(Request $request, $id)
     {

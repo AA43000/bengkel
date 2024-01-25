@@ -23,6 +23,16 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin123'),
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
+            'id_cabang' => 1
+        ]);
+
+        // DB::statement("INSERT INTO cabangs (id, nama, telephone, alamat, created_at, updated_at) VALUES (2, 'Bengkel A', '', '', NOW(), NOW())");
+        DB::table('cabangs')->insert([
+            'nama' => 'Bengkel A',
+            'telephone' => '',
+            'alamat' => '',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         $this->command->info('Admin user created!');

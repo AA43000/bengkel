@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sales;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SalesController extends Controller
 {
@@ -13,15 +14,17 @@ class SalesController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $sales = Sales::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('sales/index', compact('sales'));
+        return view('sales/index', compact('sales', 'app'));
     }
     public function create()
     {
-        return view('sales.create');
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        return view('sales.create', compact('app'));
     }
     public function store(Request $request)
     {
@@ -54,8 +57,9 @@ class SalesController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $sales = Sales::find($id);
-        return view('sales.edit', compact('sales'));
+        return view('sales.edit', compact('sales', 'app'));
     }
     public function update(Request $request, $id)
     {

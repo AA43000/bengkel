@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SupplierController extends Controller
 {
@@ -13,15 +14,17 @@ class SupplierController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $suppliers = Supplier::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('supplier/index', compact('suppliers'));
+        return view('supplier/index', compact('suppliers', 'app'));
     }
     public function create()
     {
-        return view('supplier.create');
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        return view('supplier.create', compact('app'));
     }
     public function store(Request $request)
     {
@@ -68,8 +71,9 @@ class SupplierController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $supplier = Supplier::find($id);
-        return view('supplier.edit', compact('supplier'));
+        return view('supplier.edit', compact('supplier', 'app'));
     }
     public function update(Request $request, $id)
     {

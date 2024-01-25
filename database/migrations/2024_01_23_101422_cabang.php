@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('cabangs', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->string('telephone');
+            $table->string('alamat');
             $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });

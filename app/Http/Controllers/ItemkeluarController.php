@@ -20,22 +20,24 @@ class ItemkeluarController extends Controller
     }
     public function index()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query header itemkeluar
         $thitemkeluars = Thitemkeluar::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
         ->paginate(5);
-        return view('item_keluar/index', compact('thitemkeluars'));
+        return view('item_keluar/index', compact('thitemkeluars', 'app'));
     }
     public function create()
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         // query produk
         $produks = DB::table('produks')
             ->select('*')
             ->where('is_delete', 0)
             ->where('id_cabang', auth()->user()->id_cabang)
             ->get();
-        return view('item_keluar.create', compact('produks'));
+        return view('item_keluar.create', compact('produks', 'app'));
     }
     function generatePurchaseCode() {
         // mengambil data kode terakhir yang ada
@@ -255,6 +257,7 @@ class ItemkeluarController extends Controller
 
     public function edit($id)
     {
+        $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         //query produk
         $produks = DB::table('produks')
             ->select('*')
@@ -264,7 +267,7 @@ class ItemkeluarController extends Controller
         
         // query header itemkeluar
         $thitemkeluar = Thitemkeluar::find($id);
-        return view('item_keluar.edit', compact('thitemkeluar', 'produks'));
+        return view('item_keluar.edit', compact('thitemkeluar', 'produks', 'app'));
     }
     public function update(Request $request, $id)
     {
