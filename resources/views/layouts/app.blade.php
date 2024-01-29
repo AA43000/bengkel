@@ -10,7 +10,7 @@
           integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
           crossorigin="anonymous"/>
 
-    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('/css/app.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 
     @stack('third_party_stylesheets')
@@ -81,7 +81,7 @@
     </footer>
 </div>
 
-<script src="{{ asset('/js/app.js') }}"></script>
+<script src="{{ URL::asset('/js/app.js') }}"></script>
 
 @stack('third_party_scripts')
 
