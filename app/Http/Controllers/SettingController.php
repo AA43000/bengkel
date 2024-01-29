@@ -14,7 +14,7 @@ class SettingController extends Controller
     public function index()
     {
         $app = Cabang::find(auth()->user()->id_cabang);
-        $cabang = Cabang::find(0);
+        $cabang = Cabang::find(auth()->user()->id_cabang);
         return view('setting.edit', compact('cabang', 'app'));
     }
     public function update(Request $request, $id)
