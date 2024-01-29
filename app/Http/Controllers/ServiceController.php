@@ -69,7 +69,7 @@ class ServiceController extends Controller
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
             ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
             ->where('a.is_delete', 0)
-            ->where('id_cabang', auth()->user()->id_cabang)
+            ->where('a.id_cabang', auth()->user()->id_cabang)
             ->where('a.idthservice', $idthservice)
             ->get();
 
@@ -318,6 +318,7 @@ class ServiceController extends Controller
             'kode'          => '',
             'total'          => 'numeric',
             'potongan'          => 'numeric',
+            'id_mekanik'          => 'required|not_in:0',
             'tanggal'          => 'required',
             'total_akhir'          => 'numeric'
         ]);

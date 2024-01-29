@@ -62,7 +62,7 @@ class ItemkeluarController extends Controller
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
             ->select('b.nama_item', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
             ->where('a.is_delete', 0)
-            ->where('id_cabang', auth()->user()->id_cabang)
+            ->where('a.id_cabang', auth()->user()->id_cabang)
             ->where('a.idthitemkeluar', $idthitemkeluar)
             ->get();
 
@@ -214,7 +214,7 @@ class ItemkeluarController extends Controller
         $this->validate($request, [
             'kode'          => '',
             'total'          => 'numeric|not_in:0',
-            'keterangan'          => 'string',
+            'keterangan'          => '',
             'tanggal'          => 'date'
         ]);
 
@@ -275,7 +275,7 @@ class ItemkeluarController extends Controller
         $this->validate($request, [
             'kode'          => '',
             'total'          => 'numeric|not_in:0',
-            'keterangan'          => 'string',
+            'keterangan'          => '',
             'tanggal'          => 'date'
         ]);
 
