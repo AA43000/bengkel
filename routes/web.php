@@ -103,4 +103,15 @@ Route::get('/service/get_detail/{idthpembelian}', [\App\Http\Controllers\Service
 Route::resource('/setting', \App\Http\Controllers\SettingController::class);
 Route::put('/setting/{id}', [\App\Http\Controllers\SettingController::class, 'update'])->name('setting.update');
 
+Route::resource('/tukartambah', \App\Http\Controllers\TukartambahController::class);
+Route::get('/tukartambah/{id}/edit', [\App\Http\Controllers\TukartambahController::class, 'edit'])->name('tukartambah.edit');
+Route::put('/tukartambah/{id}', [\App\Http\Controllers\TukartambahController::class, 'update'])->name('tukartambah.update');
+Route::get('/tukartambah/{id}', [\App\Http\Controllers\TukartambahController::class, 'destroy'])->name('tukartambah.destroy');
+Route::post('/tukartambah/post_detail', [\App\Http\Controllers\TukartambahController::class, 'post_detail'])->name('tukartambah.post_detail');
+Route::get('/tukartambah/load_produk/{id_produk}', [\App\Http\Controllers\TukartambahController::class, 'load_produk'])->name('tukartambah.load_produk');
+Route::get('/tukartambah/load_detail/{idthpembelian}', [\App\Http\Controllers\TukartambahController::class, 'load_detail'])->name('tukartambah.load_detail');
+Route::get('/tukartambah/edit_detail/{idtdpembelian}', [\App\Http\Controllers\TukartambahController::class, 'edit_detail'])->name('tukartambah.edit_detail');
+Route::get('/tukartambah/delete_detail/{idtdpembelian}', [\App\Http\Controllers\TukartambahController::class, 'delete_detail'])->name('tukartambah.delete_detail');
+Route::get('/tukartambah/get_detail/{idthpembelian}', [\App\Http\Controllers\TukartambahController::class, 'get_detail'])->name('tukartambah.get_detail');
+
 Auth::routes();
