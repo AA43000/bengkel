@@ -247,7 +247,7 @@ class TpenjualanController extends Controller
             'kode'          => '',
             'id_pelanggan'          => 'required|not_in:0',
             'total'          => 'numeric|not_in:0',
-            'potongan'          => 'numeric',
+            'potongan'          => '',
             'total_akhir'          => 'numeric'
         ]);
 
@@ -256,7 +256,7 @@ class TpenjualanController extends Controller
             'kode'     => $this->generatePurchaseCode(),
             'id_pelanggan'     => $request->id_pelanggan,
             'total'     => $request->total,
-            'potongan'     => $request->potongan,
+            'potongan'     => ($request->potongan ? $request->potongan : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal,
             'id_cabang' => auth()->user()->id_cabang
@@ -318,7 +318,7 @@ class TpenjualanController extends Controller
             'kode'          => '',
             'id_pelanggan'          => 'required|not_in:0',
             'total'          => 'numeric|not_in:0',
-            'potongan'          => 'numeric',
+            'potongan'          => '',
             'total_akhir'          => 'numeric'
         ]);
 
@@ -335,7 +335,7 @@ class TpenjualanController extends Controller
             'kode'     => $request->kode,
             'id_pelanggan'     => $request->id_pelanggan,
             'total'     => $request->total,
-            'potongan'     => $request->potongan,
+            'potongan'     => ($request->potongan ? $request->potongan : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal
         ]);

@@ -76,7 +76,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="potongan">Potongan</label>
+                                    <label for="potongan">Potongan(%)</label>
                                     <input type="number" class="form-control @error('potongan') is-invalid @enderror" name="potongan" id="potongan" value="{{ old('potongan', $thpenjualan->potongan) }}" onkeyup="get_total()">
                                     
                                         <!-- error message untuk potongan -->
@@ -264,7 +264,12 @@
     }
     function get_total() {
         var total = Number($("#total").val());
-        var potongan = Number($("#potongan").val());
+        var persen = Number($("#potongan").val());
+        if(persen > 100) {
+            persen = 100;
+            $("#potongan").val(100);
+        }
+        var potongan = total * persen / 100;
 
         $("#total_akhir").val(total-potongan);
     }

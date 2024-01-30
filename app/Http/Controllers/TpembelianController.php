@@ -143,7 +143,7 @@ class TpembelianController extends Controller
 
         if ($produk) {
             // produk ditemukan
-            $response["harga"] = $produk->harga_jual;
+            $response["harga"] = $produk->harga_pokok;
         } else {
             // Produk tidak ditemukan
             $response["harga"] = 0;
@@ -225,7 +225,7 @@ class TpembelianController extends Controller
             'kode'          => '',
             'id_supplier'          => 'required|not_in:0',
             'total'          => 'numeric|not_in:0',
-            'potongan'          => 'numeric',
+            'potongan'          => '',
             'total_akhir'          => 'numeric'
         ]);
 
@@ -296,7 +296,7 @@ class TpembelianController extends Controller
             'kode'          => '',
             'id_supplier'          => 'required|not_in:0',
             'total'          => 'numeric|not_in:0',
-            'potongan'          => 'numeric',
+            'potongan'          => '',
             'total_akhir'          => 'numeric'
         ]);
 

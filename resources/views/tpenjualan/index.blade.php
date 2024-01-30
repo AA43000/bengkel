@@ -31,7 +31,7 @@
                         <th>Kode</th>
                         <th>Pelanggan</th>
                         <th>Total</th>
-                        <th>Potongan</th>
+                        <th>Potongan(%)</th>
                         <th>Total Akhir</th>
                         <th>Tanggal</th>
                         <th></th>
@@ -98,7 +98,7 @@
                             <th id="total"></th>
                         </tr>
                         <tr>
-                            <th style="text-align: right" colspan="5">Potongan</th>
+                            <th style="text-align: right" colspan="5">Potongan (%)</th>
                             <th id="potongan"></th>
                         </tr>
                         <tr>

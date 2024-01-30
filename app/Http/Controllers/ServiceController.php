@@ -317,7 +317,7 @@ class ServiceController extends Controller
         $this->validate($request, [
             'kode'          => '',
             'total'          => 'numeric',
-            'potongan'          => 'numeric',
+            'potongan'          => '',
             'id_mekanik'          => 'required|not_in:0',
             'tanggal'          => 'required',
             'total_akhir'          => 'numeric'
