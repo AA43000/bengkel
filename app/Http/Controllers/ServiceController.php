@@ -337,7 +337,7 @@ class ServiceController extends Controller
             'no_plat'     => $request->no_plat,
             'id_mekanik'     => $request->id_mekanik,
             'total'     => $request->total,
-            'potongan'     => $request->potongan,
+            'potongan'     => ($request->potongan ? $request->potongan : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal
         ]);

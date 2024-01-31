@@ -234,7 +234,7 @@ class TpembelianController extends Controller
             'kode'     => $this->generatePurchaseCode(),
             'id_supplier'     => $request->id_supplier,
             'total'     => $request->total,
-            'potongan'     => $request->potongan,
+            'potongan'     => ($request->potongan ? $request->potongan : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal,
             'id_cabang' => auth()->user()->id_cabang
@@ -313,7 +313,7 @@ class TpembelianController extends Controller
             'kode'     => $request->kode,
             'id_supplier'     => $request->id_supplier,
             'total'     => $request->total,
-            'potongan'     => $request->potongan,
+            'potongan'     => ($request->potongan ? $request->potongan : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal
         ]);
