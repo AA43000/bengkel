@@ -15,6 +15,7 @@ class Cabang extends Model
         'nama',
         'telephone',
         'alamat',
+        'logo',
         'is_delete'
     ];
 }

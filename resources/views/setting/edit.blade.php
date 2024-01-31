@@ -28,8 +28,29 @@
                         <h3 class="card-title">General</h3>
                     </div>
                     <div class="card-body">
+
+                        <div class="form-group">
+                            <label for="logo">Logo</label>
+                            <!-- <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="exampleInputFile">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Upload</span>
+                                </div>
+                            </div> -->
+                            <input type="file" class="form-control @error('logo') is-invalid @enderror" name="logo" id="logo" value="{{ old('logo', $cabang->logo) }}">
+                            
+                                <!-- error message untuk logo -->
+                                @error('logo')
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                        </div>
                     
-                    <div class="form-group">
+                        <div class="form-group">
                             <label for="nama">Nama</label>
                             <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" id="nama" value="{{ old('nama', $cabang->nama) }}" placeholder="Masukkan Nama">
                             

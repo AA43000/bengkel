@@ -24,6 +24,7 @@ class SettingController extends Controller
             'nama'          => 'required|string',
             'alamat'        => '',
             'telephone'     => '',
+            'file' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Lakukan pembaruan data berdasarkan $id
@@ -40,6 +41,25 @@ class SettingController extends Controller
             'alamat'   => $request->alamat ? $request->alamat : '',
             'telephone'   => $request->telephone ? $request->telephone : '',
         ]);
+
+        if ($request->file('logo')) { // Periksa apakah file ada
+            if ($request->file('logo')->isValid()) {
+                $file = $request->file('logo');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                $file->move(public_path('uploads'), $fileName);
+
+                $cabang->update([
+                    'logo'   => $fileName,
+                ]);
+
+                return redirect()->back()->with('success', 'File berhasil diunggah.');
+            } else {
+                return redirect()->back()->with('error', 'File tidak valid.');
+            }
+        } else {
+            return redirect()->back()->with('error', 'Tidak ada file yang diunggah.');
+        }
 
         //redirect to index
         return redirect()->route('setting.index')->with(['success' => 'Data Berhasil Diubah!']);
