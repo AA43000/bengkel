@@ -114,4 +114,20 @@ Route::get('/tukartambah/edit_detail/{idtdpembelian}', [\App\Http\Controllers\Tu
 Route::get('/tukartambah/delete_detail/{idtdpembelian}', [\App\Http\Controllers\TukartambahController::class, 'delete_detail'])->name('tukartambah.delete_detail');
 Route::get('/tukartambah/get_detail/{idthpembelian}', [\App\Http\Controllers\TukartambahController::class, 'get_detail'])->name('tukartambah.get_detail');
 
+Route::resource('/lpembelian', \App\Http\Controllers\LPembelianController::class);
+Route::post('/lpembelian/get_data', [\App\Http\Controllers\LPembelianController::class, 'get_data'])->name('lpembelian.get_data');
+
+Route::resource('/lpenjualan', \App\Http\Controllers\LPenjualanController::class);
+Route::post('/lpenjualan/get_data', [\App\Http\Controllers\LPenjualanController::class, 'get_data'])->name('lpenjualan.get_data');
+
+Route::resource('/lservice', \App\Http\Controllers\LServiceController::class);
+Route::post('/lservice/get_data', [\App\Http\Controllers\LServiceController::class, 'get_data'])->name('lservice.get_data');
+
+Route::resource('/ltukartambah', \App\Http\Controllers\LTukartambahController::class);
+Route::post('/ltukartambah/get_data', [\App\Http\Controllers\LTukartambahController::class, 'get_data'])->name('ltukartambah.get_data');
+
+Route::resource('/litemkeluar', \App\Http\Controllers\LItemkeluarController::class);
+Route::post('/litemkeluar/get_data', [\App\Http\Controllers\LItemkeluarController::class, 'get_data'])->name('litemkeluar.get_data');
+
+
 Auth::routes();
