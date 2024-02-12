@@ -52,8 +52,7 @@
                             <th>Tanggal</th>
                             <th>No Plat</th>
                             <th>Mekanik</th>
-                            <th>Total</th>
-                            <th>Potongan(%)</th>
+                            <th>Pembayaran</th>
                             <th>Total Akhir</th>
                         </tr>
                     </thead>
@@ -62,9 +61,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="5">Total</th>
-                            <th id="total"></th>
-                            <th id="total_potongan"></th>
+                            <th colspan="6">Total</th>
                             <th id="total_akhir"></th>
                         </tr>
                     </tfoot>
@@ -96,8 +93,6 @@
             success: function(data) {
                 var html = '';
                 var no = 1;
-                var total = 0;
-                var total_potongan = 0;
                 var total_akhir = 0;
                 for(var x=0;x<data.thservice.length;x++) {
                     html += '<tr>';
@@ -106,19 +101,14 @@
                         html += '<td>'+data.thservice[x].tanggal+'</td>';
                         html += '<td>'+data.thservice[x].no_plat+'</td>';
                         html += '<td>'+(data.thservice[x].id_mekanik != 0 ? data.thservice[x].kode_mekanik+' - '+data.thservice[x].nama_mekanik : 'Waiting')+'</td>';
-                        html += '<td>'+data.thservice[x].total+'</td>';
-                        html += '<td>'+data.thservice[x].potongan+'</td>';
+                        html += '<td>'+data.thservice[x].pembayaran+'</td>';
                         html += '<td>'+data.thservice[x].total_akhir+'</td>';
                     html += '</tr>';
                     no++;
 
-                    total += data.thservice[x].total;
-                    total_potongan += (data.thservice[x].total - data.thservice[x].total_akhir);
                     total_akhir += data.thservice[x].total_akhir;
                 }
 
-                $("#total").html(total);
-                $("#total_potongan").html(total_potongan);
                 $("#total_akhir").html(total_akhir);
                 $("#table_body").html(html);
             },

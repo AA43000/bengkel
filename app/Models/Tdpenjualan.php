@@ -16,6 +16,8 @@ class Tdpenjualan extends Model
         'qty',
         'harga',
         'subtotal',
+        'potongan',
+        'grand_total',
         'id_cabang',
         'is_delete'
     ];

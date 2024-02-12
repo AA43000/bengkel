@@ -105,51 +105,53 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">
-                                                <select id="id_produk" name="id_produk" class="form-control select2" onchange="load_produk()" required>
-                                                    <option value="0" selected="">Select one</option>
-                                                    @foreach($produks as $produk)
-                                                    <option value="{{ $produk->id }}">{{ $produk->kode_item.' - '.$produk->nama_item }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </th>
-                                            <th>
-                                                <input type="number" class="form-control" name="qty" id="qty" value="0" onkeyup="get_total_detail()" required>
-                                            </th>
-                                            <th>
-                                                <input type="number" class="form-control" name="harga" id="harga" value="" onkeyup="get_total_detail()" required>
-                                            </th>
-                                            <th>
-                                                <input type="number" class="form-control" name="subtotal" id="subtotal" value="0" readonly>
-                                            </th>
-                                            <th>
-                                                <input type="number" class="form-control" name="potongan" id="potongan" value="0" onkeyup="get_total_detail()" required>
-                                            </th>
-                                            <th>
-                                                <input type="number" class="form-control" name="total" id="total" value="" readonly>
-                                            </th>
-                                            <th>
-                                                <button type="submit" class="btn btn-success">Add Detail</button>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Produk</th>
-                                            <th>Qty</th>
-                                            <th>Harga</th>
-                                            <th>Subtotal</th>
-                                            <th>Potongan</th>
-                                            <th>Total</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabel_detail">
-                                        
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">
+                                                    <select id="id_produk" name="id_produk" class="form-control select2" onchange="load_produk()" required>
+                                                        <option value="0" selected="">Select one</option>
+                                                        @foreach($produks as $produk)
+                                                        <option value="{{ $produk->id }}">{{ $produk->kode_item.' - '.$produk->nama_item }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </th>
+                                                <th>
+                                                    <input type="number" class="form-control" name="qty" id="qty" value="0" onkeyup="get_total_detail()" required>
+                                                </th>
+                                                <th>
+                                                    <input type="number" class="form-control" name="harga" id="harga" value="" onkeyup="get_total_detail()" required>
+                                                </th>
+                                                <th>
+                                                    <input type="number" class="form-control" name="subtotal" id="subtotal" value="0" readonly>
+                                                </th>
+                                                <th>
+                                                    <input type="number" class="form-control" name="potongan" id="potongan" value="0" onkeyup="get_total_detail()" required>
+                                                </th>
+                                                <th>
+                                                    <input type="number" class="form-control" name="total" id="total" value="" readonly>
+                                                </th>
+                                                <th>
+                                                    <button type="submit" class="btn btn-success">Add Detail</button>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Produk</th>
+                                                <th>Qty</th>
+                                                <th>Harga</th>
+                                                <th>Subtotal</th>
+                                                <th>Potongan</th>
+                                                <th>Total</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabel_detail">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 

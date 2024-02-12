@@ -52,6 +52,7 @@
                             <th>Tanggal</th>
                             <th>Keterangan</th>
                             <th>Total</th>
+                            <th>Total Qty</th>
                         </tr>
                     </thead>
                     <tbody id="table_body">
@@ -61,6 +62,7 @@
                         <tr>
                             <th colspan="4">Total</th>
                             <th id="total"></th>
+                            <th id="total_qty"></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -92,6 +94,7 @@
                 var html = '';
                 var no = 1;
                 var total = 0;
+                var total_qty = 0;
                 for(var x=0;x<data.thitemkeluar.length;x++) {
                     html += '<tr>';
                         html += '<td>'+no+'</td>';
@@ -99,13 +102,16 @@
                         html += '<td>'+data.thitemkeluar[x].tanggal+'</td>';
                         html += '<td>'+data.thitemkeluar[x].keterangan+'</td>';
                         html += '<td>'+data.thitemkeluar[x].total+'</td>';
+                        html += '<td>'+data.thitemkeluar[x].total_qty+'</td>';
                     html += '</tr>';
                     no++;
 
                     total += data.thitemkeluar[x].total;
+                    total_qty += data.thitemkeluar[x].total_qty;
                 }
 
                 $("#total").html(total);
+                $("#total_qty").html(total_qty);
                 $("#table_body").html(html);
             },
             error: function(error) {

@@ -18,7 +18,7 @@ class SalesController extends Controller
         $sales = Sales::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
+        ->get();
         return view('sales/index', compact('sales', 'app'));
     }
     public function create()

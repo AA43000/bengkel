@@ -67,7 +67,7 @@ class ServiceController extends Controller
         // query detail service di form service
         $query = DB::table('tdservices as a')
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
-            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
+            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.potongan', 'a.grand_total', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.id_cabang', auth()->user()->id_cabang)
             ->where('a.idthservice', $idthservice)
@@ -92,6 +92,8 @@ class ServiceController extends Controller
             $response["qty"] = $query->qty;
             $response["harga"] = $query->harga;
             $response["subtotal"] = $query->subtotal;
+            $response["potongan"] = $query->potongan;
+            $response["grand_total"] = $query->grand_total;
         } else {
             // jika data tidak ditemukan
             $response["id"] = '';
@@ -100,6 +102,8 @@ class ServiceController extends Controller
             $response["qty"] = '';
             $response["harga"] = '';
             $response["subtotal"] = '';
+            $response["potongan"] = '';
+            $response["grand_total"] = '';
         }
         return response()->json($response);
     }
@@ -110,7 +114,7 @@ class ServiceController extends Controller
 
         $response['tdservice'] = DB::table('tdservices as a')
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
-            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
+            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal'. 'a.potongan', 'a.grand_total', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.idthservice', $idthservice)
             ->get();
@@ -175,6 +179,8 @@ class ServiceController extends Controller
                         'qty'     => $request->qty,
                         'harga'     => $request->harga,
                         'subtotal'     => $request->subtotal,
+                        'potongan'     => ($request->potongan ? $request->potongan : 0),
+                        'grand_total'     => $request->grand_total,
                         'id_cabang' => auth()->user()->id_cabang
                     ]);
                     
@@ -225,6 +231,8 @@ class ServiceController extends Controller
                         'qty'     => $request->qty,
                         'harga'     => $request->harga,
                         'subtotal'     => $request->subtotal,
+                        'potongan'     => ($request->potongan ? $request->potongan : 0),
+                        'grand_total'     => $request->grand_total,
                     ]);
                     $response["status"] = 200;
                 } else {
@@ -258,11 +266,13 @@ class ServiceController extends Controller
                 'kode'     => $this->generatePurchaseCode(),
                 'no_plat'     => $request->no_plat,
                 'id_mekanik'     => 0,
-                'total'     => 0,
-                'potongan'     => 0,
+                'total_bayar'     => 0,
+                'kembalian'     => 0,
+                'pembayaran'     => '',
                 'total_akhir'     => 0,
                 'tanggal'     => date('Y-m-d'),
-                'id_cabang' => auth()->user()->id_cabang
+                'id_cabang' => auth()->user()->id_cabang,
+                'id_user' => auth()->user()->id,
             ]);
             
             $response["status"] = 200;
@@ -316,8 +326,6 @@ class ServiceController extends Controller
         //validate form
         $this->validate($request, [
             'kode'          => '',
-            'total'          => 'numeric',
-            'potongan'          => '',
             'id_mekanik'          => 'required|not_in:0',
             'tanggal'          => 'required',
             'total_akhir'          => 'numeric'
@@ -336,9 +344,10 @@ class ServiceController extends Controller
             'kode'     => $request->kode,
             'no_plat'     => $request->no_plat,
             'id_mekanik'     => $request->id_mekanik,
-            'total'     => $request->total,
-            'potongan'     => ($request->potongan ? $request->potongan : 0),
+            'total_bayar'     => $request->total_bayar,
+            'kembalian'     => $request->kembalian,
             'total_akhir'     => $request->total_akhir,
+            'pembayaran'     => $request->pembayaran,
             'tanggal'     => $request->tanggal
         ]);
 

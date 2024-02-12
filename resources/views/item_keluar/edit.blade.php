@@ -32,8 +32,8 @@
                     <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="kode">Kode</label>
-                                    <input type="text" class="form-control @error('kode') is-invalid @enderror" name="kode" id="kode" value="{{ old('kode', $thitemkeluar->kode) }}" readonly>
+                                    <label for="kode">No</label>
+                                    <input type="text" class="form-control @error('kode') is-invalid @enderror" name="kode" id="kode" value="{{ old('kode', $thitemkeluar->kode) }}">
                                     
                                         <!-- error message untuk kode -->
                                         @error('kode')
@@ -63,6 +63,19 @@
                                     
                                         <!-- error message untuk total -->
                                         @error('total')
+                                            <div class="alert alert-danger mt-2">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="total_qty">Total Qty</label>
+                                    <input type="number" class="form-control @error('total_qty') is-invalid @enderror" name="total_qty" id="total_qty" value="{{ old('total_qty', $thitemkeluar->total_qty) }}" readonly>
+                                    
+                                        <!-- error message untuk total_qty -->
+                                        @error('total_qty')
                                             <div class="alert alert-danger mt-2">
                                                 {{ $message }}
                                             </div>
@@ -103,43 +116,49 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">
-                                                <select id="id_produk" name="id_produk" class="form-control select2" onchange="load_produk()" required>
-                                                    <option value="0" selected="">Select one</option>
-                                                    @foreach($produks as $produk)
-                                                    <option value="{{ $produk->id }}">{{ $produk->kode_item.' - '.$produk->nama_item }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </th>
-                                            <th>
-                                                <input type="number" class="form-control" name="qty" id="qty" value="" onkeyup="get_total_detail()" required>
-                                            </th>
-                                            <th>
-                                                <input type="number" class="form-control" name="harga" id="harga" value="" onkeyup="get_total_detail()" required>
-                                            </th>
-                                            <th>
-                                                <input type="number" class="form-control" name="subtotal" id="subtotal" value="" readonly>
-                                            </th>
-                                            <th>
-                                                <button type="submit" class="btn btn-success">Add Detail</button>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Produk</th>
-                                            <th>Qty</th>
-                                            <th>Harga</th>
-                                            <th>Subtotal</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabel_detail">
-                                        
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">
+                                                    <select id="id_produk" name="id_produk" class="form-control select2" onchange="load_produk()" required>
+                                                        <option value="0" selected="">Select one</option>
+                                                        @foreach($produks as $produk)
+                                                        <option value="{{ $produk->id }}">{{ $produk->kode_item.' - '.$produk->nama_item }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </th>
+                                                <th>
+                                                    <input type="number" class="form-control" name="qty" id="qty" value="" onkeyup="get_total_detail()" required>
+                                                </th>
+                                                <th>
+                                                    <input type="number" class="form-control" name="harga" id="harga" value="" onkeyup="get_total_detail()" required>
+                                                </th>
+                                                <th>
+                                                    <input type="number" class="form-control" name="subtotal" id="subtotal" value="" readonly>
+                                                </th>
+                                                <th>
+                                                    <input type="text" class="form-control" name="keterangan" id="ket" value="">
+                                                </th>
+                                                <th>
+                                                    <button type="submit" class="btn btn-success"><i class="fa fa-fw fa-plus"></i></button>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Produk</th>
+                                                <th>Qty</th>
+                                                <th>Harga</th>
+                                                <th>Subtotal</th>
+                                                <th>Ket</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabel_detail">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
@@ -192,6 +211,7 @@
         $("#qty").val('0');
         $("#harga").val('0');
         $("#subtotal").val('0');
+        $("#ket").val('');
         $("#id_detail").val('0');
     }
     function load_detail() {
@@ -204,6 +224,7 @@
                 var html = '';
                 var no = 1;
                 var total = 0;
+                var total_qty = 0;
                 for(var x = 0;x<data.data.length;x++) {
                     html += '<tr>';
                         html += '<td>'+no+'</td>';
@@ -211,13 +232,16 @@
                         html += '<td>'+data.data[x].qty+'</td>';
                         html += '<td>'+data.data[x].harga+'</td>';
                         html += '<td>'+data.data[x].subtotal+'</td>';
-                        html += '<td>'+'<button type="button" class="btn btn-success" onclick="edit_detail('+data.data[x].id+')">Edit</button> '+' <button type="button" class="btn btn-danger" onclick="delete_detail('+data.data[x].id+')">Hapus</button>'+'</td>';
+                        html += '<td>'+data.data[x].keterangan+'</td>';
+                        html += '<td>'+'<button type="button" class="btn btn-success" onclick="edit_detail('+data.data[x].id+')"><i class="fa fa-fw fa-edit"></i></button> '+' <button type="button" class="btn btn-danger" onclick="delete_detail('+data.data[x].id+')"><i class="fa fa-fw fa-trash"></i></button>'+'</td>';
                     html += '</tr>';
                     no++;
 
                     total += data.data[x].subtotal;
+                    total_qty += data.data[x].qty;
                 }
                 $("#tabel_detail").html(html);
+                $("#total_qty").val(total_qty);
                 $("#total").val(total);
             },
             error: function(error) {
@@ -252,6 +276,7 @@
                 $("#qty").val(data.qty);
                 $("#harga").val(data.harga);
                 $("#subtotal").val(data.subtotal);
+                $("#ket").val(data.keterangan);
             },
             error: function(error) {
                 console.log(error);

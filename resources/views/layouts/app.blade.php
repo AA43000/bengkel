@@ -10,12 +10,13 @@
           integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
           crossorigin="anonymous"/>
 
+    <link href="{{ URL::asset('/css/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('/datatable/datatables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('/css/app.css') }}" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
-
     @stack('third_party_stylesheets')
-
+    
     @stack('page_css')
+    <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -86,5 +87,14 @@
 @stack('third_party_scripts')
 
 @stack('page_scripts')
+<script src="{{ URL::asset('/js/select2.full.min.js') }}"></script>
+<script src="{{ URL::asset('/datatable/datatables.min.js') }}"></script>
+<script>
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2();
+        $('.table').DataTable();
+    });
+</script>
 </body>
 </html>

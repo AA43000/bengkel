@@ -25,7 +25,7 @@ class ItemkeluarController extends Controller
         $thitemkeluars = Thitemkeluar::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
+        ->get();
         return view('item_keluar/index', compact('thitemkeluars', 'app'));
     }
     public function create()
@@ -60,7 +60,7 @@ class ItemkeluarController extends Controller
         // query detail itemkeluar di form itemkeluar
         $query = DB::table('tditemkeluars as a')
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
-            ->select('b.nama_item', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
+            ->select('b.nama_item', 'a.qty', 'a.harga', 'a.subtotal', 'a.keterangan', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.id_cabang', auth()->user()->id_cabang)
             ->where('a.idthitemkeluar', $idthitemkeluar)
@@ -84,6 +84,7 @@ class ItemkeluarController extends Controller
             $response["qty"] = $query->qty;
             $response["harga"] = $query->harga;
             $response["subtotal"] = $query->subtotal;
+            $response["keterangan"] = $query->keterangan;
         } else {
             // jika data tidak ditemukan
             $response["id"] = '';
@@ -91,6 +92,7 @@ class ItemkeluarController extends Controller
             $response["qty"] = '';
             $response["harga"] = '';
             $response["subtotal"] = '';
+            $response["keterangan"] = '';
         }
         return response()->json($response);
     }
@@ -101,7 +103,7 @@ class ItemkeluarController extends Controller
 
         $response['tditemkeluar'] = DB::table('tditemkeluars as a')
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
-            ->select('b.nama_item', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
+            ->select('b.nama_item', 'a.qty', 'a.harga', 'a.subtotal', 'a.keterangan', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.idthitemkeluar', $idthitemkeluar)
             ->get();
@@ -160,6 +162,7 @@ class ItemkeluarController extends Controller
                     'qty'     => $request->qty,
                     'harga'     => $request->harga,
                     'subtotal'     => $request->subtotal,
+                    'keterangan'     => ($request->keterangan ? $request->keterangan : ''),
                     'id_cabang' => auth()->user()->id_cabang
                 ]);
                     
@@ -197,6 +200,7 @@ class ItemkeluarController extends Controller
                     'qty'     => $request->qty,
                     'harga'     => $request->harga,
                     'subtotal'     => $request->subtotal,
+                    'keterangan'     => ($request->keterangan ? $request->keterangan : ''),
                 ]);
                 $response["status"] = 200;
             } else {
@@ -220,12 +224,13 @@ class ItemkeluarController extends Controller
 
         //create
         $thitemkeluar = Thitemkeluar::create([
-            'kode'     => $this->generatePurchaseCode(),
-            'keterangan'     => $request->keterangan,
+            'kode'     => ($request->kode != "Auto" ? $request->kode : $this->generatePurchaseCode()),
+            'keterangan'     => ($request->keterangan ? $request->keterangan : ''),
             'total'     => $request->total,
+            'total_qty'     => $request->total_qty,
             'tanggal'     => $request->tanggal,
             'id_cabang' => auth()->user()->id_cabang,
-            'created_by'     => $this->userId
+            'id_user' => auth()->user()->id
         ]);
 
         // update id header di detail itemkeluar
@@ -292,6 +297,7 @@ class ItemkeluarController extends Controller
             'kode'     => $request->kode,
             'keterangan'     => $request->keterangan,
             'total'     => $request->total,
+            'total_qty'     => $request->total_qty,
             'tanggal'     => $request->tanggal
         ]);
 

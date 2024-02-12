@@ -13,11 +13,13 @@ class Thservice extends Model
         'kode',
         'no_plat',
         'id_mekanik',
-        'total',
-        'potongan',
+        'total_bayar',
+        'kembalian',
+        'pembayaran',
         'total_akhir',
         'tanggal',
         'id_cabang',
+        'id_user',
         'is_delete'
     ];
 }

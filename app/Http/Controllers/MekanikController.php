@@ -18,7 +18,7 @@ class MekanikController extends Controller
         $mekaniks = Mekanik::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
+        ->get();
         return view('mekanik/index', compact('mekaniks', 'app'));
     }
     public function create()

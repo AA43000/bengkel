@@ -21,10 +21,10 @@ class TpembelianController extends Controller
         // query header pembelian
         $thpembelians = Thpembelian::leftJoin('suppliers', 'suppliers.id', '=', 'thpembelians.id_supplier')
         ->select('thpembelians.*', 'suppliers.kode as kode_supplier', 'suppliers.nama as nama_supplier')
-        ->latest()
         ->where('thpembelians.is_delete', 0)
         ->where('thpembelians.id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
+        ->orderBy('sisa_bayar', 'desc')
+        ->get();
         return view('tpembelian/index', compact('thpembelians', 'app'));
     }
     public function create()
@@ -66,7 +66,7 @@ class TpembelianController extends Controller
         // query detail pembelian di form pembelian
         $query = DB::table('tdpembelians as a')
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
-            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
+            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.potongan', '.a.grand_total', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.id_cabang', auth()->user()->id_cabang)
             ->where('a.idthpembelian', $idthpembelian)
@@ -91,6 +91,8 @@ class TpembelianController extends Controller
             $response["qty"] = $query->qty;
             $response["harga"] = $query->harga;
             $response["subtotal"] = $query->subtotal;
+            $response["potongan"] = $query->potongan;
+            $response["grand_total"] = $query->grand_total;
         } else {
             // jika data tidak ditemukan
             $response["id"] = '';
@@ -99,6 +101,8 @@ class TpembelianController extends Controller
             $response["qty"] = '';
             $response["harga"] = '';
             $response["subtotal"] = '';
+            $response["grand_total"] = '';
+            $response["potongan"] = '';
         }
         return response()->json($response);
     }
@@ -109,7 +113,7 @@ class TpembelianController extends Controller
 
         $response['tdpembelian'] = DB::table('tdpembelians as a')
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
-            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
+            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.potongan', 'a.grand_total', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.idthpembelian', $idthpembelian)
             ->get();
@@ -169,6 +173,8 @@ class TpembelianController extends Controller
                     'qty'     => $request->qty,
                     'harga'     => $request->harga,
                     'subtotal' => $request->subtotal,
+                    'potongan' => ($request->potongan ? $request->potongan : 0),
+                    'grand_total' => $request->grand_total,
                     'id_cabang' => auth()->user()->id_cabang
                 ]);
                     
@@ -207,6 +213,8 @@ class TpembelianController extends Controller
                     'qty'     => $request->qty,
                     'harga'     => $request->harga,
                     'subtotal'     => $request->subtotal,
+                    'potongan' => ($request->potongan ? $request->potongan : 0),
+                    'grand_total' => $request->grand_total,
                 ]);
                 $response["status"] = 200;
             } else {
@@ -224,20 +232,22 @@ class TpembelianController extends Controller
         $this->validate($request, [
             'kode'          => '',
             'id_supplier'          => 'required|not_in:0',
-            'total'          => 'numeric|not_in:0',
-            'potongan'          => '',
+            'total_bayar'          => '',
             'total_akhir'          => 'numeric'
         ]);
 
         //create
         $thpembelian = Thpembelian::create([
-            'kode'     => $this->generatePurchaseCode(),
+            'kode'     => ($request->kode == "Auto" ? $this->generatePurchaseCode() : $request->kode),
+            'no_pesanan'     => $request->no_pesanan,
+            'pembayaran'     => $request->pembayaran,
             'id_supplier'     => $request->id_supplier,
-            'total'     => $request->total,
-            'potongan'     => ($request->potongan ? $request->potongan : 0),
+            'sisa_bayar'     => $request->sisa_bayar,
+            'total_bayar'     => ($request->total_bayar ? $request->total_bayar : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal,
-            'id_cabang' => auth()->user()->id_cabang
+            'id_cabang' => auth()->user()->id_cabang,
+            'id_user' => auth()->user()->id,
         ]);
 
         // update id header di detail pembelian
@@ -289,14 +299,36 @@ class TpembelianController extends Controller
         $thpembelian = Thpembelian::find($id);
         return view('tpembelian.edit', compact('thpembelian', 'suppliers', 'produks', 'app'));
     }
+    public function add_supplier(Request $request) {
+        //create
+        Supplier::create([
+            'kode'     => $request->kode,
+            'nama'     => $request->nama,
+            'alamat'     => '',
+            'kota'     => '',
+            'provinsi'     => '',
+            'kode_pos'     => '0',
+            'negara'     => '',
+            'telephone'     => '',
+            'fax'     => '',
+            'bank'     => '',
+            'no_account'     => '',
+            'atas_nama'     => '',
+            'kontak_person'     => '',
+            'email'     => '',
+            'id_cabang' => auth()->user()->id_cabang
+        ]);
+
+        //redirect to index
+        return redirect($request->callback);
+    }
     public function update(Request $request, $id)
     {
         //validate form
         $this->validate($request, [
             'kode'          => '',
             'id_supplier'          => 'required|not_in:0',
-            'total'          => 'numeric|not_in:0',
-            'potongan'          => '',
+            'total_bayar'          => '',
             'total_akhir'          => 'numeric'
         ]);
 
@@ -311,9 +343,11 @@ class TpembelianController extends Controller
         // Lakukan pembaruan berdasarkan data dari $request
         $thpembelian->update([
             'kode'     => $request->kode,
+            'no_pesanan'     => $request->no_pesanan,
+            'pembayaran'     => $request->pembayaran,
             'id_supplier'     => $request->id_supplier,
-            'total'     => $request->total,
-            'potongan'     => ($request->potongan ? $request->potongan : 0),
+            'sisa_bayar'     => $request->sisa_bayar,
+            'total_bayar'     => ($request->total_bayar ? $request->total_bayar : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal
         ]);

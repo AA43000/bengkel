@@ -24,42 +24,46 @@
             <a href="{{ route('tukartambah.create') }}" class="btn btn-md btn-success mb-3">Tambah Tukar Tambah</a>
         </div>
         <div class="card-body p-0">
-            <table class="table table-striped projects">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Kode</th>
-                        <th>Pelanggan</th>
-                        <th>Total</th>
-                        <th>Tanggal</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($thtukartambahs as $thtukartambah)
-                    <tr>
-                        <td>#</td>
-                        <td><span class="text-primary" style="cursor: pointer" onclick="get_detail({{ $thtukartambah->id }})">{{ $thtukartambah->kode }}</span></td>
-                        <td>{{ $thtukartambah->kode_pelanggan.' - '.$thtukartambah->nama_pelanggan }}</td>
-                        <td>{{ $thtukartambah->total }}</td>
-                        <td>{{ $thtukartambah->tanggal }}</td>
-                        <td class="project-actions text-right">
-                            <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('tukartambah.destroy', $thtukartambah->id) }}" method="post">
-                                <a href="{{ route('tukartambah.edit', $thtukartambah->id) }}" class="btn btn-sm btn-primary">EDIT</a>
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <div class="alert alert-danger">
-                        Data tukartambah belum tersedia.
-                    </div>
-                    @endforelse
-                </tbody>
-            </table>
-            {{ $thtukartambahs->links() }}
+            <div class="table-responsive">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Kode</th>
+                            <th>Pelanggan</th>
+                            <th>Total</th>
+                            <th>Tanggal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $no = 1;
+                        @endphp
+                        @forelse ($thtukartambahs as $thtukartambah)
+                        <tr>
+                            <td>{{ $no++ }}</td>
+                            <td><span class="text-primary" style="cursor: pointer" onclick="get_detail({{ $thtukartambah->id }})">{{ $thtukartambah->kode }}</span></td>
+                            <td>{{ $thtukartambah->kode_pelanggan.' - '.$thtukartambah->nama_pelanggan }}</td>
+                            <td>{{ $thtukartambah->total }}</td>
+                            <td>{{ $thtukartambah->tanggal }}</td>
+                            <td class="project-actions text-right">
+                                <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('tukartambah.destroy', $thtukartambah->id) }}" method="post">
+                                    <a href="{{ route('tukartambah.edit', $thtukartambah->id) }}" class="btn btn-sm btn-primary">EDIT</a>
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <div class="alert alert-danger">
+                            Data tukartambah belum tersedia.
+                        </div>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>

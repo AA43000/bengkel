@@ -14,8 +14,10 @@ class Thitemkeluar extends Model
         'total',
         'keterangan',
         'tanggal',
+        'total_qty',
         'created_by',
         'id_cabang',
+        'id_user',
         'is_delete'
     ];
 }

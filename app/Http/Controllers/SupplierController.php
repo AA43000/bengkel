@@ -18,7 +18,7 @@ class SupplierController extends Controller
         $suppliers = Supplier::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
+        ->get();
         return view('supplier/index', compact('suppliers', 'app'));
     }
     public function create()

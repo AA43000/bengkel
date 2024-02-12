@@ -48,12 +48,13 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Kode</th>
+                            <th>No Transaksi</th>
+                            <th>No Pesanan</th>
                             <th>Tanggal</th>
                             <th>Supplier</th>
-                            <th>Total</th>
-                            <th>Potongan(%)</th>
                             <th>Total Akhir</th>
+                            <th>Total Bayar</th>
+                            <th>Sisa Bayar</th>
                         </tr>
                     </thead>
                     <tbody id="table_body">
@@ -61,10 +62,10 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="4">Total</th>
-                            <th id="total"></th>
-                            <th id="total_potongan"></th>
+                            <th colspan="5">Total</th>
                             <th id="total_akhir"></th>
+                            <th id="total_bayar"></th>
+                            <th id="sisa_bayar"></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -95,28 +96,29 @@
             success: function(data) {
                 var html = '';
                 var no = 1;
-                var total = 0;
-                var total_potongan = 0;
+                var total_bayar = 0;
+                var sisa_bayar = 0;
                 var total_akhir = 0;
                 for(var x=0;x<data.thpembelian.length;x++) {
                     html += '<tr>';
                         html += '<td>'+no+'</td>';
                         html += '<td>'+data.thpembelian[x].kode+'</td>';
+                        html += '<td>'+data.thpembelian[x].no_pesanan+'</td>';
                         html += '<td>'+data.thpembelian[x].tanggal+'</td>';
                         html += '<td>'+data.thpembelian[x].kode_supplier+' - '+data.thpembelian[x].nama_supplier+'</td>';
-                        html += '<td>'+data.thpembelian[x].total+'</td>';
-                        html += '<td>'+data.thpembelian[x].potongan+'</td>';
                         html += '<td>'+data.thpembelian[x].total_akhir+'</td>';
+                        html += '<td>'+data.thpembelian[x].total_bayar+'</td>';
+                        html += '<td>'+data.thpembelian[x].sisa_bayar+'</td>';
                     html += '</tr>';
                     no++;
 
-                    total += data.thpembelian[x].total;
-                    total_potongan += (data.thpembelian[x].total - data.thpembelian[x].total_akhir);
+                    total_bayar += data.thpembelian[x].total_bayar;
+                    sisa_bayar += data.thpembelian[x].sisa_bayar;
                     total_akhir += data.thpembelian[x].total_akhir;
                 }
 
-                $("#total").html(total);
-                $("#total_potongan").html(total_potongan);
+                $("#total_bayar").html(total_bayar);
+                $("#sisa_bayar").html(sisa_bayar);
                 $("#total_akhir").html(total_akhir);
                 $("#table_body").html(html);
             },

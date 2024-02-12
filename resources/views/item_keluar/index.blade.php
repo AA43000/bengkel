@@ -24,42 +24,48 @@
             <a href="{{ route('item_keluar.create') }}" class="btn btn-md btn-success mb-3">Tambah Item Keluar</a>
         </div>
         <div class="card-body p-0">
-            <table class="table table-striped projects">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Kode</th>
-                        <th>Tanggal</th>
-                        <th>Total</th>
-                        <th>Keterangan</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($thitemkeluars as $thitemkeluar)
-                    <tr>
-                        <td>#</td>
-                        <td><span class="text-primary" style="cursor: pointer" onclick="get_detail({{ $thitemkeluar->id }})">{{ $thitemkeluar->kode }}</span></td>
-                        <td>{{ $thitemkeluar->tanggal }}</td>
-                        <td>{{ $thitemkeluar->total }}</td>
-                        <td>{{ $thitemkeluar->keterangan }}</td>
-                        <td class="project-actions text-right">
-                            <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('item_keluar.destroy', $thitemkeluar->id) }}" method="post">
-                                <a href="{{ route('item_keluar.edit', $thitemkeluar->id) }}" class="btn btn-sm btn-primary">EDIT</a>
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <div class="alert alert-danger">
-                        Data item keluar belum tersedia.
-                    </div>
-                    @endforelse
-                </tbody>
-            </table>
-            {{ $thitemkeluars->links() }}
+            <div class="table-responsive">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Total</th>
+                            <th>Total Qty</th>
+                            <th>Keterangan</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $no = 1;
+                        @endphp
+                        @forelse ($thitemkeluars as $thitemkeluar)
+                        <tr>
+                            <td>{{ $no++ }}</td>
+                            <td><span class="text-primary" style="cursor: pointer" onclick="get_detail({{ $thitemkeluar->id }})">{{ $thitemkeluar->kode }}</span></td>
+                            <td>{{ $thitemkeluar->tanggal }}</td>
+                            <td>{{ $thitemkeluar->total }}</td>
+                            <td>{{ $thitemkeluar->total_qty }}</td>
+                            <td>{{ $thitemkeluar->keterangan }}</td>
+                            <td class="project-actions text-right">
+                                <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('item_keluar.destroy', $thitemkeluar->id) }}" method="post">
+                                    <a href="{{ route('item_keluar.edit', $thitemkeluar->id) }}" class="btn btn-sm btn-primary">EDIT</a>
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <div class="alert alert-danger">
+                            Data item keluar belum tersedia.
+                        </div>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>
@@ -68,7 +74,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Transaksi: <span id="kode_transaksi"></span></h4>
+                    <h4 class="modal-title">No: <span id="kode_transaksi"></span></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -89,7 +95,9 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th style="text-align: right" colspan="4">Total</th>
+                            <th colspan="2">Total</th>
+                            <th id="total_qty"></th>
+                            <th></th>
                             <th id="total"></th>
                         </tr>
                     </tfoot>
@@ -111,6 +119,7 @@
             success: function(data) {
                 $("#kode_transaksi").html(data.thitemkeluar.kode);
                 $("#total").html(data.thitemkeluar.total);
+                $("#total_qty").html(data.thitemkeluar.total_qty);
 
                 var html = '';
                 var no = 1;

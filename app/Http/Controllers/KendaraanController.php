@@ -18,7 +18,7 @@ class KendaraanController extends Controller
         $kendaraans = Kendaraan::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
+        ->get();
         return view('kendaraan/index', compact('kendaraans', 'app'));
     }
     public function create()

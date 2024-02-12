@@ -24,7 +24,7 @@ class TpenjualanController extends Controller
         ->latest()
         ->where('thpenjualans.is_delete', 0)
         ->where('thpenjualans.id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
+        ->get();
         return view('tpenjualan/index', compact('thpenjualans', 'app'));
     }
     public function create()
@@ -66,7 +66,7 @@ class TpenjualanController extends Controller
         // query detail penjualan di form penjualan
         $query = DB::table('tdpenjualans as a')
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
-            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
+            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.potongan', 'a.grand_total', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.id_cabang', auth()->user()->id_cabang)
             ->where('a.idthpenjualan', $idthpenjualan)
@@ -91,6 +91,8 @@ class TpenjualanController extends Controller
             $response["qty"] = $query->qty;
             $response["harga"] = $query->harga;
             $response["subtotal"] = $query->subtotal;
+            $response["potongan"] = $query->potongan;
+            $response["grand_total"] = $query->grand_total;
         } else {
             // jika data tidak ditemukan
             $response["id"] = '';
@@ -99,6 +101,8 @@ class TpenjualanController extends Controller
             $response["qty"] = '';
             $response["harga"] = '';
             $response["subtotal"] = '';
+            $response["potongan"] = '';
+            $response["grand_total"] = '';
         }
         return response()->json($response);
     }
@@ -109,12 +113,33 @@ class TpenjualanController extends Controller
 
         $response['tdpenjualan'] = DB::table('tdpenjualans as a')
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
-            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.id')
+            ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.potongan', 'a.grand_total', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.idthpenjualan', $idthpenjualan)
             ->get();
 
         return response()->json($response);
+    }
+    public function add_pelanggan(Request $request)
+    {
+        //create
+        Pelanggan::create([
+            'kode'     => $request->kode,
+            'nama'   => $request->nama,
+            'alamat'   => '',
+            'kota'   => '',
+            'provinsi'   => '',
+            'kode_pos'   => '0',
+            'negara'   => '',
+            'telephone'   => '',
+            'fax'   => '',
+            'kontak_person'   => '',
+            'note'   => '',
+            'id_cabang' => auth()->user()->id_cabang
+        ]);
+
+        //redirect to index
+        return redirect()->route('tpenjualan.create')->with(['success' => 'Data Berhasil Disimpan!']);
     }
     public function delete_detail($idtdpenjualan) {
 
@@ -174,6 +199,8 @@ class TpenjualanController extends Controller
                         'qty'     => $request->qty,
                         'harga'     => $request->harga,
                         'subtotal'     => $request->subtotal,
+                        'potongan'     => ($request->potongan ? $request->potongan : 0),
+                        'grand_total'     => $request->grand_total,
                         'id_cabang' => auth()->user()->id_cabang
                     ]);
                     
@@ -224,6 +251,8 @@ class TpenjualanController extends Controller
                         'qty'     => $request->qty,
                         'harga'     => $request->harga,
                         'subtotal'     => $request->subtotal,
+                        'potongan'     => ($request->potongan ? $request->potongan : 0),
+                        'grand_total'     => $request->grand_total,
                     ]);
                     $response["status"] = 200;
                 } else {
@@ -245,9 +274,8 @@ class TpenjualanController extends Controller
         //validate form
         $this->validate($request, [
             'kode'          => '',
-            'id_pelanggan'          => 'required|not_in:0',
-            'total'          => 'numeric|not_in:0',
-            'potongan'          => '',
+            'id_pelanggan'          => 'required',
+            'kembalian'          => 'numeric|min:0',
             'total_akhir'          => 'numeric'
         ]);
 
@@ -255,11 +283,13 @@ class TpenjualanController extends Controller
         $thpenjualan = Thpenjualan::create([
             'kode'     => $this->generatePurchaseCode(),
             'id_pelanggan'     => $request->id_pelanggan,
-            'total'     => $request->total,
-            'potongan'     => ($request->potongan ? $request->potongan : 0),
+            'pembayaran'     => $request->pembayaran,
+            'kembalian'     => $request->kembalian,
+            'total_bayar'     => ($request->total_bayar ? $request->total_bayar : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal,
-            'id_cabang' => auth()->user()->id_cabang
+            'id_cabang' => auth()->user()->id_cabang,
+            'id_user' => auth()->user()->id,
         ]);
 
         // update id header di detail penjualan
@@ -271,7 +301,7 @@ class TpenjualanController extends Controller
         // mengarah ke fungsi update stok produk
         $this->update_stok($thpenjualan->id);
         //redirect to index
-        return redirect()->route('tpenjualan.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->route('tpenjualan.index')->with(['success' => 'Data Berhasil Disimpan!', 'idthpenjualan' => $thpenjualan->id]);
     }
 
     public function update_stok($idthpenjualan) {
@@ -316,9 +346,8 @@ class TpenjualanController extends Controller
         //validate form
         $this->validate($request, [
             'kode'          => '',
-            'id_pelanggan'          => 'required|not_in:0',
-            'total'          => 'numeric|not_in:0',
-            'potongan'          => '',
+            'id_pelanggan'          => 'required',
+            'kembalian'          => 'numeric|min:0',
             'total_akhir'          => 'numeric'
         ]);
 
@@ -334,14 +363,15 @@ class TpenjualanController extends Controller
         $thpenjualan->update([
             'kode'     => $request->kode,
             'id_pelanggan'     => $request->id_pelanggan,
-            'total'     => $request->total,
-            'potongan'     => ($request->potongan ? $request->potongan : 0),
+            'pembayaran'     => $request->pembayaran,
+            'kembalian'     => $request->kembalian,
+            'total_bayar'     => ($request->total_bayar ? $request->total_bayar : 0),
             'total_akhir'     => $request->total_akhir,
             'tanggal'     => $request->tanggal
         ]);
 
         //redirect to index
-        return redirect()->route('tpenjualan.index')->with(['success' => 'Data Berhasil Diubah!']);
+        return redirect()->route('tpenjualan.index')->with(['success' => 'Data Berhasil Diubah!' , 'idthpenjualan' => $id]);
     }
     public function destroy($id)
     {
@@ -375,5 +405,22 @@ class TpenjualanController extends Controller
 
         //redirect to index
         return redirect()->route('tpenjualan.index')->with(['success' => 'Data Berhasil Dihapus!']);
+    }
+
+    public function print($idthpenjualan) {
+        $data['thpenjualan'] = DB::table('thpenjualans as a')
+        ->leftJoin('pelanggans as b', 'a.id_pelanggan', '=', 'b.id')
+        ->select('a.*', 'b.nama', 'b.alamat', 'b.telephone')
+        ->where('a.id', $idthpenjualan)
+        ->first();
+        $data['app'] = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        $data['tdpenjualan'] = DB::table('tdpenjualans as a')
+        ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
+        ->select('b.nama_item', 'b.kode_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.potongan', 'a.grand_total', 'a.id')
+        ->where('a.is_delete', 0)
+        ->where('a.idthpenjualan', $idthpenjualan)
+        ->get();
+
+        return view('tpenjualan.print', $data);
     }
 }

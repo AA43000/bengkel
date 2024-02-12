@@ -51,8 +51,7 @@
                             <th>Kode</th>
                             <th>Tanggal</th>
                             <th>Pelanggan</th>
-                            <th>Total</th>
-                            <th>Potongan(%)</th>
+                            <th>Pembayaran</th>
                             <th>Total Akhir</th>
                         </tr>
                     </thead>
@@ -61,9 +60,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="4">Total</th>
-                            <th id="total"></th>
-                            <th id="total_potongan"></th>
+                            <th colspan="5">Total</th>
                             <th id="total_akhir"></th>
                         </tr>
                     </tfoot>
@@ -87,6 +84,7 @@
         load_data();
     })
     function load_data() {
+        $(".table").DataTable().destroy();
         $.ajax({
             url: '/lpenjualan/get_data',
             data: $("#filter_form").serialize(),
@@ -103,22 +101,18 @@
                         html += '<td>'+no+'</td>';
                         html += '<td>'+data.thpenjualan[x].kode+'</td>';
                         html += '<td>'+data.thpenjualan[x].tanggal+'</td>';
-                        html += '<td>'+data.thpenjualan[x].kode_pelanggan+' - '+data.thpenjualan[x].nama_pelanggan+'</td>';
-                        html += '<td>'+data.thpenjualan[x].total+'</td>';
-                        html += '<td>'+data.thpenjualan[x].potongan+'</td>';
+                        html += '<td>'+(data.thpenjualan[x].id_pelanggan != 0 ? data.thpenjualan[x].kode_pelanggan+' - '+data.thpenjualan[x].nama_pelanggan : 'Pelanggan Pengunjung')+'</td>';
+                        html += '<td>'+data.thpenjualan[x].pembayaran+'</td>';
                         html += '<td>'+data.thpenjualan[x].total_akhir+'</td>';
                     html += '</tr>';
                     no++;
 
-                    total += data.thpenjualan[x].total;
-                    total_potongan += (data.thpenjualan[x].total - data.thpenjualan[x].total_akhir);
                     total_akhir += data.thpenjualan[x].total_akhir;
                 }
 
-                $("#total").html(total);
-                $("#total_potongan").html(total_potongan);
                 $("#total_akhir").html(total_akhir);
                 $("#table_body").html(html);
+                $(".table").DataTable();
             },
             error: function(error) {
                 console.log(error);

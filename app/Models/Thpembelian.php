@@ -12,11 +12,14 @@ class Thpembelian extends Model
     protected $fillable = [
         'kode',
         'id_supplier',
-        'total',
-        'potongan',
+        'no_pesanan',
+        'pembayaran',
+        'total_bayar',
+        'sisa_bayar',
         'total_akhir',
         'tanggal',
         'id_cabang',
+        'id_user',
         'is_delete'
     ];
 }

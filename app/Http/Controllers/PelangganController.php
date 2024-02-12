@@ -18,7 +18,7 @@ class PelangganController extends Controller
         $pelanggans = Pelanggan::latest()
         ->where('is_delete', 0)
         ->where('id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
+        ->get();
         return view('pelanggan/index', compact('pelanggans', 'app'));
     }
     public function create()
@@ -32,30 +32,30 @@ class PelangganController extends Controller
         $this->validate($request, [
             'kode'          => 'required|string',
             'nama'          => 'required|string',
-            'alamat'        => 'required',
-            'kota'          => 'required',
-            'provinsi'          => 'required',
-            'kode_pos'          => 'required|integer',
-            'negara'          => 'required',
-            'telephone'     => 'required',
-            'fax'     => 'required',
-            'kontak_person'     => 'required',
-            'note'     => 'required',
+            'alamat'        => '',
+            'kota'          => '',
+            'provinsi'          => '',
+            'kode_pos'          => '',
+            'negara'          => '',
+            'telephone'     => '',
+            'fax'     => '',
+            'kontak_person'     => '',
+            'note'     => '',
         ]);
 
         //create
         Pelanggan::create([
             'kode'     => $request->kode,
             'nama'   => $request->nama,
-            'alamat'   => $request->alamat,
-            'kota'   => $request->kota,
-            'provinsi'   => $request->provinsi,
-            'kode_pos'   => $request->kode_pos,
-            'negara'   => $request->negara,
-            'telephone'   => $request->telephone,
-            'fax'   => $request->fax,
-            'kontak_person'   => $request->kontak_person,
-            'note'   => $request->note,
+            'alamat'   => ($request->alamat ? $request->alamat : ''),
+            'kota'   => ($request->kota ? $request->kota : ''),
+            'provinsi'   => ($request->provinsi ? $request->provinsi : ''),
+            'kode_pos'   => ($request->kode_pos ? $request->kode_pos : ''),
+            'negara'   => ($request->negara ? $request->negara : ''),
+            'telephone'   => ($request->telephone ? $request->telephone : ''),
+            'fax'   => ($request->fax ? $request->fax : ''),
+            'kontak_person'   => ($request->kontak_person ? $request->kontak_person : ''),
+            'note'   => ($request->note ? $request->note : ''),
             'id_cabang' => auth()->user()->id_cabang
         ]);
 
