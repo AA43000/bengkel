@@ -25,6 +25,7 @@ class LPenjualanController extends Controller
             ->leftJoin('pelanggans as b', 'a.id_pelanggan', '=', 'b.id')
             ->select('b.kode as kode_pelanggan', 'b.nama as nama_pelanggan', 'a.*')
             ->where('a.is_delete', 0)
+            ->where('a.id_cabang', auth()->user()->id_cabang)
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->orderBy('tanggal', 'desc')
             ->get();

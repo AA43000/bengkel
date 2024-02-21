@@ -26,6 +26,7 @@ class LPembelianController extends Controller
             ->leftJoin('suppliers as b', 'a.id_supplier', '=', 'b.id')
             ->select('b.kode as kode_supplier', 'b.nama as nama_supplier', 'a.*')
             ->where('a.is_delete', 0)
+            ->where('a.id_cabang', auth()->user()->id_cabang)
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->orderBy('tanggal', 'desc')
             ->get();

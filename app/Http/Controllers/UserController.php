@@ -11,27 +11,41 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->role != 'admin') {
+                abort(403, 'Unauthorized action.');
+            }
+            
+            return $next($request);
+        });
     }
 
     public function index()
     {
         $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
-        $users = User::latest()
-            ->where('is_delete', 0)
-            ->where('id_cabang', auth()->user()->id_cabang)
-            ->paginate(5);
+        $users = User::leftJoin('cabangs', 'cabangs.id', '=', 'users.id_cabang')
+            ->select('users.*', 'cabangs.nama as cabang')
+            ->where('users.is_delete', 0)
+            ->get();
         return view('user/index', compact('users', 'app'));
     }
     public function create()
     {
+        // query cabang
+        $cabangs = DB::table('cabangs')
+            ->select('*')
+            ->where('is_delete', 0)
+            ->get();
+        
         $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
-        return view('user.create', compact('app'));
+        return view('user.create', compact('app', 'cabangs'));
     }
     public function store(Request $request)
     {
         //validate form
         $this->validate($request, [
             'name'     => 'required|string|min:5',
+            'id_cabang'     => 'required',
             'email'   => 'required|string|email|unique:users',
             'password'     => 'required|string|min:8|confirmed'
         ]);
@@ -40,7 +54,8 @@ class UserController extends Controller
         User::create([
             'name'     => $request->name,
             'email'   => $request->email,
-            'id_cabang' => auth()->user()->id_cabang,
+            'id_cabang' => $request->id_cabang,
+            'role' => $request->role,
             'password'   => Hash::make($request->password)
         ]);
 
@@ -50,9 +65,14 @@ class UserController extends Controller
 
     public function edit($id)
     {
+        // query cabang
+        $cabangs = DB::table('cabangs')
+            ->select('*')
+            ->where('is_delete', 0)
+            ->get();
         $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
         $user = User::find($id);
-        return view('user.edit', compact('user', 'app'));
+        return view('user.edit', compact('user', 'app', 'cabangs'));
     }
     public function update(Request $request, $id)
     {
@@ -78,7 +98,9 @@ class UserController extends Controller
         // Lakukan pembaruan berdasarkan data dari $request
         $user->update([
             'name'     => $request->name,
-            'email'   => $request->email
+            'email'   => $request->email,
+            'id_cabang' => $request->id_cabang,
+            'role' => $request->role,
         ]);
 
         if($request->password != '') {

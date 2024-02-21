@@ -24,6 +24,7 @@ class LItemkeluarController extends Controller
         $response['thitemkeluar'] = DB::table('thitemkeluars as a')
             ->select('a.*')
             ->where('a.is_delete', 0)
+            ->where('a.id_cabang', auth()->user()->id_cabang)
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->orderBy('tanggal', 'desc')
             ->get();

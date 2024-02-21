@@ -69,6 +69,39 @@
                             <label for="retype_password">Retype Password</label>
                             <input type="password" name="password_confirmation" class="form-control" id="retype_password" placeholder="Retype password">
                         </div>
+
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select name="role" id="role" class="form-control">
+                                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="kasir" {{ $user->role == 'kasir' ? 'selected' : '' }}>Kasir</option>
+                                <option value="mekanik" {{ $user->role == 'mekanik' ? 'selected' : '' }}>Mekanik</option>
+                            </select>
+                            
+                                <!-- error message untuk role -->
+                                @error('role')
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_cabang">Cabang</label>
+                            <select name="id_cabang" id="id_cabang" class="form-control select2">
+                                @foreach($cabangs as $cabang)
+                                    <option value="{{ $cabang->id }}" {{ $user->id_cabang == $cabang->id ? 'selected' : '' }}>{{ $cabang->nama }}</option>
+                                @endforeach
+                            </select>
+                            
+                                <!-- error message untuk id_cabang -->
+                                @error('id_cabang')
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                        </div>
+
                     </div>
 
                 </div>

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'id_cabang',
         'is_delete',
+        'role',
     ];
 
     /**

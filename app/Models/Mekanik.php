@@ -19,6 +19,7 @@ class Mekanik extends Model
         'telephone',
         'note',
         'id_cabang',
-        'is_delete'
+        'is_delete',
+        'id_user'
     ];
 }

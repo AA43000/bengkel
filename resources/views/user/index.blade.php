@@ -28,17 +28,24 @@
                 <thead>
                     <tr>
                         <th style="width: 1%">#</th>
-                        <th style="width: 40%">Nama</th>
-                        <th style="width: 39%">Email</th>
-                        <th style="width: 20%"></th>
+                        <th style="width: 20%">Nama</th>
+                        <th style="width: 20%">Email</th>
+                        <th style="width: 20%">Role</th>
+                        <th style="width: 20%">Cabang</th>
+                        <th style="width: 19%"></th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $no = 1;
+                    @endphp
                     @forelse ($users as $user)
                     <tr>
-                        <td>#</td>
+                        <td>{{ $no++ }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
+                        <td>{{ $user->role }}</td>
+                        <td>{{ $user->cabang }}</td>
                         <td class="project-actions text-right">
                             <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('user.destroy', $user->id) }}" method="post">
                                 <a href="{{ route('user.edit', $user->id) }}" class="btn btn-sm btn-primary">EDIT</a>
@@ -55,7 +62,6 @@
                     @endforelse
                 </tbody>
             </table>
-            {{ $users->links() }}
         </div>
 
     </div>

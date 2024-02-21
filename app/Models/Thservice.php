@@ -20,6 +20,7 @@ class Thservice extends Model
         'tanggal',
         'id_cabang',
         'id_user',
-        'is_delete'
+        'is_delete',
+        'status'
     ];
 }

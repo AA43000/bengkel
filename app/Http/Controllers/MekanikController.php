@@ -24,7 +24,14 @@ class MekanikController extends Controller
     public function create()
     {
         $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
-        return view('mekanik.create', compact('app'));
+        
+        $users = DB::table('users')
+            ->select('*')
+            ->where('is_delete', 0)
+            ->where('role', 'mekanik')
+            ->where('id_cabang', auth()->user()->id_cabang)
+            ->get();
+        return view('mekanik.create', compact('app', 'users'));
     }
     public function store(Request $request)
     {
@@ -38,6 +45,7 @@ class MekanikController extends Controller
             'provinsi'          => 'required',
             'telephone'     => 'required',
             'note'     => 'required',
+            'id_user' => ''
         ]);
 
         //create
@@ -50,6 +58,7 @@ class MekanikController extends Controller
             'provinsi'   => $request->provinsi,
             'telephone'   => $request->telephone,
             'note'   => $request->note,
+            'id_user'   => $request->id_user,
             'id_cabang' => auth()->user()->id_cabang
         ]);
 
@@ -60,8 +69,14 @@ class MekanikController extends Controller
     public function edit($id)
     {
         $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        $users = DB::table('users')
+            ->select('*')
+            ->where('is_delete', 0)
+            ->where('role', 'mekanik')
+            ->where('id_cabang', auth()->user()->id_cabang)
+            ->get();
         $mekanik = Mekanik::find($id);
-        return view('mekanik.edit', compact('mekanik', 'app'));
+        return view('mekanik.edit', compact('mekanik', 'app', 'users'));
     }
     public function update(Request $request, $id)
     {
@@ -75,6 +90,7 @@ class MekanikController extends Controller
             'provinsi'          => 'required',
             'telephone'     => 'required',
             'note'     => 'required',
+            'id_user' => ''
         ]);
 
         // Lakukan pembaruan data berdasarkan $id
@@ -94,7 +110,8 @@ class MekanikController extends Controller
             'kota'   => $request->kota,
             'provinsi'   => $request->provinsi,
             'telephone'   => $request->telephone,
-            'note'   => $request->note
+            'note'   => $request->note,
+            'id_user'   => $request->id_user
         ]);
 
         //redirect to index

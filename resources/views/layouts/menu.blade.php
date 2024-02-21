@@ -5,12 +5,14 @@
         <p>Home</p>
     </a>
 </li>
+@if(auth()->user()->role == 'admin')
 <li class="nav-item">
     <a href="{{ route('setting.index') }}" class="nav-link">
         <i class="nav-icon fas fa-cog"></i>
         <p>Setting</p>
     </a>
 </li>
+@endif
 <li class="nav-item">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-database"></i>
@@ -20,6 +22,20 @@
         </p>
     </a>
     <ul class="nav nav-treeview" style="display: none;">
+        @if(auth()->user()->role == 'admin')
+        <li class="nav-item">
+            <a href="{{ route('cabang.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Cabang</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('user.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>User</p>
+            </a>
+        </li>
+        @endif
         <li class="nav-item">
             <a href="{{ route('produk.index') }}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -45,12 +61,6 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('user.index') }}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>User</p>
-            </a>
-        </li>
-        <li class="nav-item">
             <a href="{{ route('mekanik.index') }}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Mekanik</p>
@@ -68,7 +78,7 @@
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-shopping-cart"></i>
         <p>
-            Transksi
+            Transaksi
             <i class="right fas fa-angle-left"></i>
         </p>
     </a>

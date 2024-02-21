@@ -30,6 +30,11 @@ Route::get('/sales/{id}/edit', [\App\Http\Controllers\SalesController::class, 'e
 Route::put('/sales/{id}', [\App\Http\Controllers\SalesController::class, 'update'])->name('sales.update');
 Route::get('/sales/{id}', [\App\Http\Controllers\SalesController::class, 'destroy'])->name('sales.destroy');
 
+Route::resource('/cabang', \App\Http\Controllers\CabangController::class);
+Route::get('/cabang/{id}/edit', [\App\Http\Controllers\CabangController::class, 'edit'])->name('cabang.edit');
+Route::put('/cabang/{id}', [\App\Http\Controllers\CabangController::class, 'update'])->name('cabang.update');
+Route::get('/cabang/{id}', [\App\Http\Controllers\CabangController::class, 'destroy'])->name('cabang.destroy');
+
 Route::resource('/pelanggan', \App\Http\Controllers\PelangganController::class);
 Route::get('/pelanggan/{id}/edit', [\App\Http\Controllers\PelangganController::class, 'edit'])->name('pelanggan.edit');
 Route::put('/pelanggan/{id}', [\App\Http\Controllers\PelangganController::class, 'update'])->name('pelanggan.update');
@@ -131,6 +136,25 @@ Route::post('/ltukartambah/get_data', [\App\Http\Controllers\LTukartambahControl
 
 Route::resource('/litemkeluar', \App\Http\Controllers\LItemkeluarController::class);
 Route::post('/litemkeluar/get_data', [\App\Http\Controllers\LItemkeluarController::class, 'get_data'])->name('litemkeluar.get_data');
+
+Route::resource('/mekanik_panel', \App\Http\Controllers\MekanikpanelController::class);
+Route::get('/mekanik_panel/edit/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'edit'])->name('mekanik_panel.edit');
+Route::get('/mekanik_panel/get_kerusakan/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'get_kerusakan'])->name('mekanik_panel.get_kerusakan');
+Route::get('/mekanik_panel/edit_kerusakan/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'edit_kerusakan'])->name('mekanik_panel.edit_kerusakan');
+Route::get('/mekanik_panel/delete_kerusakan/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'delete_kerusakan'])->name('mekanik_panel.delete_kerusakan');
+Route::post('/mekanik_panel/action_kerusakan', [\App\Http\Controllers\MekanikpanelController::class, 'action_kerusakan'])->name('mekanik_panel.action_kerusakan');
+
+Route::get('/mekanik_panel/get_perbaikan/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'get_perbaikan'])->name('mekanik_panel.get_perbaikan');
+Route::get('/mekanik_panel/edit_perbaikan/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'edit_perbaikan'])->name('mekanik_panel.edit_perbaikan');
+Route::get('/mekanik_panel/delete_perbaikan/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'delete_perbaikan'])->name('mekanik_panel.delete_perbaikan');
+Route::post('/mekanik_panel/action_perbaikan', [\App\Http\Controllers\MekanikpanelController::class, 'action_perbaikan'])->name('mekanik_panel.action_perbaikan');
+
+Route::get('/mekanik_panel/get_pergantian/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'get_pergantian'])->name('mekanik_panel.get_pergantian');
+Route::get('/mekanik_panel/edit_pergantian/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'edit_pergantian'])->name('mekanik_panel.edit_pergantian');
+Route::get('/mekanik_panel/delete_pergantian/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'delete_pergantian'])->name('mekanik_panel.delete_pergantian');
+Route::post('/mekanik_panel/action_pergantian', [\App\Http\Controllers\MekanikpanelController::class, 'action_pergantian'])->name('mekanik_panel.action_pergantian');
+
+Route::get('/mekanik_panel/simpan_data/{id}', [\App\Http\Controllers\MekanikpanelController::class, 'simpan_data'])->name('mekanik_panel.simpan_data');
 
 
 Auth::routes();

@@ -10,6 +10,13 @@ class SettingController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->role != 'admin') {
+                abort(403, 'Unauthorized action.');
+            }
+            
+            return $next($request);
+        });
     }
     public function index()
     {

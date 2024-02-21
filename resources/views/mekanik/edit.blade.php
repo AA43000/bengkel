@@ -124,6 +124,22 @@
                                     </div>
                                 @enderror
                         </div>
+                        <div class="form-group">
+                            <label for="id_user">User</label>
+                            <select name="id_user" id="id_user" class="form-control select2">
+                                <option value="0" selected>Select One</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ $user->id == $mekanik->id_user ? 'selected' : '' }}>{{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                            
+                                <!-- error message untuk id_user -->
+                                @error('id_user')
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                        </div>
                     </div>
 
                 </div>
