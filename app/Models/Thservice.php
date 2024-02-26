@@ -21,6 +21,8 @@ class Thservice extends Model
         'id_cabang',
         'id_user',
         'is_delete',
+        'tanggal_berikutnya',
+        'km_berikutnya',
         'status'
     ];
 }

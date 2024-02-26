@@ -18,15 +18,25 @@ class ServiceController extends Controller
     public function index()
     {
         $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
-        // query header service
-        $thservices = Thservice::leftJoin('mekaniks', 'mekaniks.id', '=', 'thservices.id_mekanik')
-        ->select('thservices.*', 'mekaniks.nama as nama_mekanik')
-        ->orderByRaw('mekaniks.id = 0 ASC')
-        ->latest()
-        ->where('thservices.is_delete', 0)
-        ->where('thservices.id_cabang', auth()->user()->id_cabang)
-        ->paginate(5);
-        return view('service/index', compact('thservices', 'app'));
+        
+        return view('service/index', compact('app'));
+    }
+    public function get_data(Request $request) {
+        $filter = $request->query('filter');
+
+        $response['thservices'] = Thservice::leftJoin('mekaniks', 'mekaniks.id', '=', 'thservices.id_mekanik')
+            ->selectRaw('MAX(thservices.id) as id, MIN(thservices.no_plat) as no_plat, MIN(thservices.status) as status, MIN(mekaniks.nama) as nama_mekanik')
+            ->orderBy('thservices.status')
+            ->groupBy('thservices.no_plat')
+            ->where('thservices.is_delete', 0)
+            ->where(function ($query) use ($filter) {
+                $query->where('thservices.no_plat', 'like', '%' . $filter . '%')
+                    ->orWhere('mekaniks.nama', 'like', '%' . $filter . '%');
+            })
+            ->where('thservices.id_cabang', auth()->user()->id_cabang)
+            ->get();
+
+        return response()->json($response);
     }
     public function create()
     {
@@ -69,7 +79,36 @@ class ServiceController extends Controller
             ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
             ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.potongan', 'a.grand_total', 'a.id')
             ->where('a.is_delete', 0)
-            ->where('a.id_cabang', auth()->user()->id_cabang)
+            ->where('a.idthservice', $idthservice)
+            ->get();
+
+        if ($query) {
+            $response["data"] = $query;
+        } else {
+            $response["data"] = [];
+        }
+        return response()->json($response);
+    }
+    public function load_detail_kerusakan($idthservice) {
+        // query detail service di form service
+        $query = DB::table('tdservicekerusakans as a')
+            ->select('a.*')
+            ->where('a.is_delete', 0)
+            ->where('a.idthservice', $idthservice)
+            ->get();
+
+        if ($query) {
+            $response["data"] = $query;
+        } else {
+            $response["data"] = [];
+        }
+        return response()->json($response);
+    }
+    public function load_detail_perbaikan($idthservice) {
+        // query detail service di form service
+        $query = DB::table('tdserviceperbaikans as a')
+            ->select('a.*')
+            ->where('a.is_delete', 0)
             ->where('a.idthservice', $idthservice)
             ->get();
 
@@ -117,6 +156,18 @@ class ServiceController extends Controller
             ->select('b.nama_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal'. 'a.potongan', 'a.grand_total', 'a.id')
             ->where('a.is_delete', 0)
             ->where('a.idthservice', $idthservice)
+            ->get();
+
+        return response()->json($response);
+    }
+    public function get_riwayat($idthservice) {
+        // fungsi get detail di popup list service
+        $response['thservice'] = Thservice::find($idthservice);
+
+        $response['thservices'] = DB::table('thservices as a')
+            ->select('a.*')
+            ->where('a.is_delete', 0)
+            ->where('a.no_plat', $response['thservice']->no_plat)
             ->get();
 
         return response()->json($response);
@@ -303,12 +354,6 @@ class ServiceController extends Controller
     public function edit($id)
     {
         $app = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
-        // query mekanik
-        $mekaniks = DB::table('mekaniks')
-            ->select('*')
-            ->where('is_delete', 0)
-            ->where('id_cabang', auth()->user()->id_cabang)
-            ->get();
         
         //query produk
         $produks = DB::table('produks')
@@ -319,6 +364,12 @@ class ServiceController extends Controller
         
         // query header service
         $thservice = Thservice::find($id);
+
+        // query mekanik
+        $mekaniks = DB::table('mekaniks')
+            ->select('*')
+            ->where('id', $thservice->id_mekanik)
+            ->first();
         return view('service.edit', compact('thservice', 'mekaniks', 'produks', 'app'));
     }
     public function update(Request $request, $id)
@@ -326,7 +377,6 @@ class ServiceController extends Controller
         //validate form
         $this->validate($request, [
             'kode'          => '',
-            'id_mekanik'          => 'required|not_in:0',
             'tanggal'          => 'required',
             'total_akhir'          => 'numeric'
         ]);
@@ -343,16 +393,19 @@ class ServiceController extends Controller
         $thservice->update([
             'kode'     => $request->kode,
             'no_plat'     => $request->no_plat,
-            'id_mekanik'     => $request->id_mekanik,
+            // 'id_mekanik'     => $request->id_mekanik,
             'total_bayar'     => $request->total_bayar,
             'kembalian'     => $request->kembalian,
             'total_akhir'     => $request->total_akhir,
             'pembayaran'     => $request->pembayaran,
-            'tanggal'     => $request->tanggal
+            'tanggal'     => $request->tanggal,
+            'tanggal_berikutnya'     => $request->tanggal_berikutnya,
+            'km_berikutnya'     => $request->km_berikutnya,
+            'status' => 3
         ]);
 
         //redirect to index
-        return redirect()->route('service.index')->with(['success' => 'Data Berhasil Diubah!']);
+        return redirect()->route('service.index')->with(['success' => 'Data Berhasil Diubah!', 'idthservice' => $id]);
     }
     public function destroy($id)
     {
@@ -386,5 +439,20 @@ class ServiceController extends Controller
 
         //redirect to index
         return redirect()->route('service.index')->with(['success' => 'Data Berhasil Dihapus!']);
+    }
+    public function print($idthservice) {
+        $data['thservice'] = DB::table('thservices as a')
+        ->select('a.*')
+        ->where('a.id', $idthservice)
+        ->first();
+        $data['app'] = DB::table('cabangs')->where('id', auth()->user()->id_cabang)->latest()->first();
+        $data['tdservice'] = DB::table('tdservices as a')
+        ->leftJoin('produks as b', 'a.id_produk', '=', 'b.id')
+        ->select('b.nama_item', 'b.kode_item', 'a.pesan', 'a.qty', 'a.harga', 'a.subtotal', 'a.potongan', 'a.grand_total', 'a.id')
+        ->where('a.is_delete', 0)
+        ->where('a.idthservice', $idthservice)
+        ->get();
+
+        return view('service.print', $data);
     }
 }

@@ -24,23 +24,17 @@
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal_create">Tambah Antrian Service</button>
         </div>
         <div class="card-body p-0">
-            <div class="row m-4">
-            @forelse ($thservices as $thservice)
-                <div class="col-md-2 col-sm-4 col-6">
-                    <div class="info-box bg-info" style="cursor: pointer" onclick="window.location.href = '{{ route('service.edit', $thservice->id) }}'">
-                        <div class="info-box-content">
-                            <span class="info-box-number" style="font-size: 2rem;text-align: center;">{{ $thservice->no_plat }}</span>
-                            <span class="progress-description">
-                                {{ ($thservice->nama_mekanik != '' ? $thservice->nama_mekanik : 'Waiting') }}
-                            </span>
-                        </div>
-                    </div>
+            <form id="formfilter" class="mx-3 my-3 row">
+                <div class="input-group mb-3 col-lg-3">
+                    <input type="text" class="form-control rounded-0" id="filter" name="filter">
+                    <span class="input-group-append">
+                        <button type="button" onclick="get_data()" class="btn btn-info btn-flat">Go!</button>
+                        <button type="button" onclick="$('#filter').val(''); get_data()" class="btn btn-warning btn-flat">Clear</button>
+                    </span>
                 </div>
-            @empty
-                <div class="alert alert-danger">
-                    Data antrian belum tersedia.
-                </div>
-            @endforelse
+            </form>
+            <div class="row m-4" id="panel_service">
+            
             </div>
         </div>
 
@@ -72,10 +66,50 @@
 
     </div>
 
+    <div class="modal fade" id="modal_riwayat">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">No Plat: <span id="no_plat_view"></span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Kode</th>
+                                <th>Tanggal</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel_body">
+    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" onclick="$('#form_antrian').submit()" class="btn btn-primary">Buat Transaksi</button>
+            </div>
+        </div>
+
+    </div>
+
 </section>
 
 <script type="text/javascript">
     $(document).ready(function() {
+        @if(session('idthservice'))
+            var next = confirm("Apakah anda ingin mencetak nota?");
+            if(next) {
+                window.open('/service/print/'+{{ session('idthservice') }});
+            }
+        @endif
+        get_data();
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -102,32 +136,64 @@
             })
         })
     });
-    function get_detail(idthservice) {
+    function get_data() {
         $.ajax({
-            url: '/service/get_detail/'+idthservice,
+            url: "{{ route('service.get_data', 1) }}",
+            dataType: "json",
+            data: $("#formfilter").serialize(),
+            type: "GET",
+            success: function(data) {
+                var html = '';
+                for(var x = 0;x<data.thservices.length;x++) {
+                    var bg = 'bg-secondary';
+                    if(data.thservices[x].status == 3) {
+                        bg = 'bg-warning';
+                    } else if(data.thservices[x].status == 2) {
+                        bg = 'bg-success';
+                    } else if(data.thservices[x].status == 1) {
+                        bg = 'bg-info';
+                    }
+                    html += '<div class="col-md-2 col-sm-4 col-6">';
+                        html += '<div class="info-box '+bg+'" style="cursor: pointer" onclick="edit('+data.thservices[x].id+', '+data.thservices[x].status+')">';
+                            html += '<div class="info-box-content">';
+                                html += '<span class="info-box-number" style="font-size: 1.8rem;text-align: center;">'+data.thservices[x].no_plat+'</span>';
+                                html += '<span class="progress-description">'+(data.thservices[x].nama_mekanik != null ? data.thservices[x].nama_mekanik : 'Waiting')+'</span>';
+                            html += '</div>';
+                        html += '</div>';
+                    html += '</div>';
+                }
+                $("#panel_service").html(html);
+            }
+        })
+    }
+    function edit(id, sts) {
+        if(sts == 1 || sts == 2) {
+            window.location.href = 'service/'+id+'/edit/';
+        } else if(sts == 3) {
+            show_riwayat(id);
+        }
+    }
+    function show_riwayat(id) {
+        $.ajax({
+            url: '/service/get_riwayat/'+id,
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                $("#kode_transaksi").html(data.thservice.kode);
-                $("#total").html(data.thservice.total);
-                $("#potongan").html(data.thservice.potongan);
-                $("#total_akhir").html(data.thservice.total_akhir);
+                $("#no_plat_view").html(data.thservice.no_plat);
+                $("#no_plat").val(data.thservice.no_plat);
 
                 var html = '';
                 var no = 1;
-                for(var x=0;x<data.tdservice.length;x++) {
+                for(var x=0;x<data.thservices.length;x++) {
                     html += '<tr>';
-                        html += '<td>'+no+'</td>';
-                        html += '<td>'+data.tdservice[x].nama_item+'</td>';
-                        html += '<td>'+(data.tdservice[x].pesan != null ? data.tdservice[x].pesan : '')+'</td>';
-                        html += '<td>'+data.tdservice[x].qty+'</td>';
-                        html += '<td>'+data.tdservice[x].harga+'</td>';
-                        html += '<td>'+data.tdservice[x].subtotal+'</td>';
+                        html += '<td>'+data.thservices[x].kode+'</td>';
+                        html += '<td>'+data.thservices[x].tanggal+'</td>';
+                        html += '<td>'+data.thservices[x].total_akhir+'</td>';
                     html += '</tr>';
                     no++;
                 }
                 $("#tabel_body").html(html);
-                $("#modal_detail").modal('show');
+                $("#modal_riwayat").modal('show');
             },
             error: function(error) {
                 console.log(error);

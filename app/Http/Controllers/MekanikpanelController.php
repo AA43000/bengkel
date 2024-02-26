@@ -24,7 +24,7 @@ class MekanikpanelController extends Controller
         $thservices = Thservice::leftJoin('mekaniks', 'mekaniks.id', '=', 'thservices.id_mekanik')
         ->select('thservices.*', 'mekaniks.nama as nama_mekanik')
         ->orderByRaw('mekaniks.id = 0 ASC')
-        ->where('thservices.status', '<', 4)
+        ->where('thservices.status', '<', 3)
         ->where('thservices.is_delete', 0)
         ->where('thservices.id_cabang', auth()->user()->id_cabang)
         ->get();

@@ -97,6 +97,8 @@ Route::get('/item_keluar/delete_detail/{id}', [\App\Http\Controllers\ItemkeluarC
 Route::get('/item_keluar/get_detail/{id}', [\App\Http\Controllers\ItemkeluarController::class, 'get_detail'])->name('item_keluar.get_detail');
 
 Route::resource('/service', \App\Http\Controllers\ServiceController::class);
+Route::get('/service/get_data/{id}', [\App\Http\Controllers\ServiceController::class, 'get_data'])->name('service.get_data');
+Route::get('/service/get_riwayat/{id}', [\App\Http\Controllers\ServiceController::class, 'get_riwayat'])->name('service.get_riwayat');
 Route::get('/service/{id}/edit', [\App\Http\Controllers\ServiceController::class, 'edit'])->name('service.edit');
 Route::put('/service/{id}', [\App\Http\Controllers\ServiceController::class, 'update'])->name('service.update');
 Route::get('/service/{id}', [\App\Http\Controllers\ServiceController::class, 'destroy'])->name('service.destroy');
@@ -104,9 +106,12 @@ Route::post('/service/post_detail', [\App\Http\Controllers\ServiceController::cl
 Route::post('/service/store', [\App\Http\Controllers\ServiceController::class, 'store'])->name('service.store');
 Route::get('/service/load_produk/{id_produk}', [\App\Http\Controllers\ServiceController::class, 'load_produk'])->name('service.load_produk');
 Route::get('/service/load_detail/{id}', [\App\Http\Controllers\ServiceController::class, 'load_detail'])->name('service.load_detail');
+Route::get('/service/load_detail_kerusakan/{id}', [\App\Http\Controllers\ServiceController::class, 'load_detail_kerusakan'])->name('service.load_detail_kerusakan');
+Route::get('/service/load_detail_perbaikan/{id}', [\App\Http\Controllers\ServiceController::class, 'load_detail_perbaikan'])->name('service.load_detail_perbaikan');
 Route::get('/service/edit_detail/{id}', [\App\Http\Controllers\ServiceController::class, 'edit_detail'])->name('service.edit_detail');
 Route::get('/service/delete_detail/{id}', [\App\Http\Controllers\ServiceController::class, 'delete_detail'])->name('service.delete_detail');
 Route::get('/service/get_detail/{id}', [\App\Http\Controllers\ServiceController::class, 'get_detail'])->name('service.get_detail');
+Route::get('/service/print/{id}', [\App\Http\Controllers\ServiceController::class, 'print'])->name('service.print');
 
 Route::resource('/setting', \App\Http\Controllers\SettingController::class);
 Route::put('/setting/{id}', [\App\Http\Controllers\SettingController::class, 'update'])->name('setting.update');

@@ -59,19 +59,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="id_mekanik">Mekanik</label>
-                                    <select id="id_mekanik" name="id_mekanik" class="form-control select2 @error('id_mekanik') is-invalid @enderror">
-                                        <option value="0" selected="">Select one</option>
-                                        @foreach($mekaniks as $mekanik)
-                                        <option value="{{ $mekanik->id }}" {{ $thservice->id_mekanik == $mekanik->id ? "selected" : "" }}>{{ $mekanik->kode.' - '.$mekanik->nama }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="text" name="mekanik" id="mekanik" value="{{ $mekaniks->nama }}" class="form-control" readonly>
                                     
-                                        <!-- error message untuk id_mekanik -->
-                                        @error('id_mekanik')
-                                            <div class="alert alert-danger mt-2">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
+                                    <!-- error message untuk id_mekanik -->
+                                    @error('id_mekanik')
+                                        <div class="alert alert-danger mt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -136,6 +131,33 @@
                                         @enderror
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tanggal_berikutnya">Tanggal Berikutnya</label>
+                                    <input type="date" class="form-control @error('tanggal_berikutnya') is-invalid @enderror" name="tanggal_berikutnya" id="tanggal_berikutnya" value="{{ old('tanggal_berikutnya', $thservice->tanggal_berikutnya) }}">
+                                    
+                                        <!-- error message untuk tanggal_berikutnya -->
+                                        @error('tanggal_berikutnya')
+                                            <div class="alert alert-danger mt-2">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="km_berikutnya">KM Berikutnya</label>
+                                    <input type="number" class="form-control @error('km_berikutnya') is-invalid @enderror" name="km_berikutnya" id="km_berikutnya" value="{{ old('km_berikutnya', $thservice->km_berikutnya) }}">
+                                    
+                                        <!-- error message untuk km_berikutnya -->
+                                        @error('km_berikutnya')
+                                            <div class="alert alert-danger mt-2">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -145,6 +167,62 @@
 
         </div>
         <div class="col-md-12">
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">Detail Kerusakan</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Bagian</th>
+                                            <th>Kerusakan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabel_detail_kerusakan">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">Detail Perbaikan</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Bagian</th>
+                                            <th>Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabel_detail_perbaikan">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
             <form id="formdetail" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="idthservice" id="idthservice" value="{{ $thservice->id }}">
@@ -220,7 +298,7 @@
     <div class="row">
         <div class="col-12">
         <a href="{{ route('service.index') }}" class="btn btn-secondary">Cancel</a>
-        <input type="button" onclick="$('#formall').submit()" value="Update Service" class="btn btn-success float-right">
+        <input type="button" onclick="if(confirm('Apakah anda yakin ingin menyelesaikan service??')){$('#formall').submit()}" value="Simpan Service" class="btn btn-success float-right">
         </div>
     </div>
     
@@ -228,6 +306,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         load_detail();
+        load_detail_kerusakan();
+        load_detail_perbaikan();
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -293,6 +373,56 @@
                 $("#tabel_detail").html(html);
                 $("#total_akhir").val(total);
                 get_kembalian();
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        })
+    }
+    function load_detail_kerusakan() {
+        var idthservice = $("#idthservice").val();
+        $.ajax({
+            url: '/service/load_detail_kerusakan/'+idthservice,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var html = '';
+                var no = 1;
+                var total = 0;
+                for(var x = 0;x<data.data.length;x++) {
+                    html += '<tr>';
+                        html += '<td>'+no+'</td>';
+                        html += '<td>'+data.data[x].bagian+'</td>';
+                        html += '<td>'+(data.data[x].kerusakan != null ? data.data[x].kerusakan : '')+'</td>';
+                    html += '</tr>';
+                    no++;
+                }
+                $("#tabel_detail_kerusakan").html(html);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        })
+    }
+    function load_detail_perbaikan() {
+        var idthservice = $("#idthservice").val();
+        $.ajax({
+            url: '/service/load_detail_perbaikan/'+idthservice,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var html = '';
+                var no = 1;
+                var total = 0;
+                for(var x = 0;x<data.data.length;x++) {
+                    html += '<tr>';
+                        html += '<td>'+no+'</td>';
+                        html += '<td>'+data.data[x].bagian+'</td>';
+                        html += '<td>'+(data.data[x].keterangan != null ? data.data[x].keterangan : '')+'</td>';
+                    html += '</tr>';
+                    no++;
+                }
+                $("#tabel_detail_perbaikan").html(html);
             },
             error: function(error) {
                 console.log(error);
